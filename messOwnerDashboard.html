@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Owner Dashboard</title>
+    <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="messOwnerDashboard.css">
+    <link rel="stylesheet" href="messOwnerStyle.css?v=2">
+    <!-- Firebase 8.10.1 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+        authDomain: "bhu-mess.firebaseapp.com",
+        databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "bhu-mess",
+        storageBucket: "bhu-mess.firebasestorage.app",
+        messagingSenderId: "272028293626",
+        appId: "1:272028293626:web:85b7604008b5463e38ec43",
+        measurementId: "G-TTYFR01MK9"
+      };
+      firebase.initializeApp(firebaseConfig);
+      // Get Firebase services
+      const database = firebase.database();
+      const auth = firebase.auth(); // Added Firebase Auth
+    </script>
+    <style>
+        /* Styles for the modern floating logout button */
+        #logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000; /* Ensures it stays on top of other elements */
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #e0e0e0;
+            border-radius: 50%; /* Makes it circular */
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        #logout-button:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- New floating logout button -->
+    <button id="logout-button" class="logout-btn-icon" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+
+    <main class="dashboard-container">
+        <div class="welcome-card" style="position: relative;">
+            <button id="edit-mess-details-btn" class="edit-mode-item" title="Edit Mess Details">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+            <p class="welcome-subtitle" id="welcome-mess-name">Welcome back,</p>
+            <h2 class="welcome-title">
+                <span class="welcome-text" id="welcome-title-mess-name"></span>
+                <input type="text" id="welcome-title-mess-name-input" class="welcome-input" style="display: none;">
+            </h2>
+            <div class="welcome-details">
+                <span class="welcome-text" id="welcome-mess-email"></span>
+                <span class="welcome-text" id="welcome-mess-phone"></span>
+                <input type="tel" id="welcome-mess-phone-input" class="welcome-input" style="display: none;">
+            </div>
+        </div>
+
+        <div class="controls-bar">
+            <label class="control-item">
+                <span class="control-label">Edit Mode:</span>
+                <input type="checkbox" id="edit-mode-toggle" checked>
+                <div class="toggle-switch"></div>
+            </label>
+            <label class="control-item edit-mode-item">
+                <span class="control-label">Mess Status:</span>
+                <input type="checkbox" id="mess-status-toggle" checked>
+                <div class="toggle-switch"></div>
+            </label>
+            <button id="save-button" class="save-btn edit-mode-item">Save</button>
+        </div>
+
+        <div class="section-title">Weekly Menu</div>
+        <div class="day-tabs"></div>
+        <div id="day-content-container"></div>
+    </main>
+
+    <div id="add-item-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Add Menu Item</h3>
+            <p class="modal-subtitle">Select items from the suggestions below or add a custom one.</p>
+            <div id="modal-suggestions" class="suggestions-container"></div>
+            <button id="modal-add-selected-button" class="modal-btn">Add Selected Items</button>
+            <div class="custom-item-form">
+                <h4>Add a Custom Item</h4>
+                <input type="text" id="modal-custom-item-input" placeholder="Custom item name">
+                <input type="number" id="modal-custom-price-input" placeholder="Price (optional)">
+                <button id="modal-add-custom-button" class="modal-btn secondary">Add Custom Item</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="messOwnerDashboard.js"></script>
+    <script>
+        // This script ensures that if "Edit Mode" is checked on page load,
+        // the corresponding functionality is activated immediately.
+        document.addEventListener('DOMContentLoaded', () => {
+            const editModeToggle = document.getElementById('edit-mode-toggle');
+            if (editModeToggle && editModeToggle.checked) {
+                // Dispatch a change event to trigger the handler in messOwnerDashboard.js
+                editModeToggle.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+    </script>
+</body>
+</html>

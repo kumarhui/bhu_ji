@@ -1,0 +1,350 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  margin: 0;
+}
+
+.dashboard-header {
+  display: none;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, #f5a6a3, #f8b4b0);
+  padding: 32px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+
+.welcome-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.welcome-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.service-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.28s ease;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.service-card:active {
+  transform: translateY(-3px);
+}
+
+.service-icon {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #f5a6a3, #f8b4b0);
+  border-radius: 10px;
+}
+
+.service-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.service-desc {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 24px 16px;
+  }
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  .welcome-card {
+    padding: 24px;
+  }
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+  .service-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .service-card {
+    padding: 16px 12px;
+  }
+  .service-icon {
+    font-size: 2rem;
+    width: 52px;
+    height: 52px;
+  }
+  .service-name {
+    font-size: 0.95rem;
+  }
+  .service-desc {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 20px 12px;
+  }
+  .dashboard-header h1 {
+    font-size: 1.3rem;
+  }
+  .header-date {
+    font-size: 0.9rem;
+  }
+  .welcome-card {
+    padding: 18px 16px;
+  }
+  .welcome-subtitle {
+    font-size: 0.85rem;
+  }
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+  .service-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .service-card {
+    padding: 14px 10px;
+  }
+  .service-icon {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+  }
+  .service-name {
+    font-size: 0.9rem;
+  }
+  .service-desc {
+    font-size: 0.75rem;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.4em;
+    color: #333;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #f1f1f1;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2em;
+    color: #888;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.modal-option-btn {
+    display: block;
+    padding: 14px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-option-btn:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.modal-body.loading .modal-option-btn {
+    display: none;
+}
+
+
+/* Admin Password Modal Styles */
+#admin-password-modal .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+#admin-password-modal input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+#admin-password-modal button.submit-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #667eea;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#admin-password-modal button.submit-btn:hover {
+    background-color: #5568d3;
+}
+#admin-password-error {
+    color: #f56565;
+    font-size: 0.9rem;
+    margin-top: -8px;
+    display: none;
+}
+
+/* Styles for input fields with icons */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* Make space for the icon */
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+}
+
+/* Styles for form options like 'remember me' */
+.form-options {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+}
+
+/* Progress Bar Styles */
+.progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin-top: 16px;
+    overflow: hidden;
+    display: none; /* Hidden by default */
+}
+.progress-bar {
+    width: 0;
+    height: 8px;
+    background-color: #007bff;
+    border-radius: 4px;
+    animation: loading-progress 1.5s ease-out forwards;
+}
+@keyframes loading-progress {
+    from { width: 0; }
+    to { width: 100%; }
+}

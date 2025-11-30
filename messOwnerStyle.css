@@ -1,0 +1,860 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Main Container */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+
+/* Welcome Card */
+.welcome-card {
+  background: linear-gradient(135deg, #f5a6a3, #f8b4b0);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+/* Edit button inside the welcome card */
+.welcome-card .edit-mode-item {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #333;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.welcome-card .edit-mode-item:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: scale(1.1);
+}
+
+.welcome-subtitle {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.welcome-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+}
+
+/* Welcome Card Details */
+.welcome-details {
+  margin-top: 12px;
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.welcome-details span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Styles for inline editable inputs in the welcome card */
+.welcome-input {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+    color: #000;
+    font-family: inherit;
+}
+
+#welcome-title-mess-name-input {
+    font-size: 1.5rem;
+    font-weight: 800;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Controls Bar */
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.control-item.edit-mode-item {
+  margin-left: auto;
+}
+
+.control-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.control-item input {
+  display: none;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  width: 50px;
+  height: 28px;
+  background: #ccc;
+  border-radius: 14px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: left 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.control-item input:checked + .toggle-switch {
+  background: #667eea;
+}
+
+.control-item input:checked + .toggle-switch::after {
+  left: calc(100% - 25px);
+}
+
+/* Save Button */
+.save-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.save-btn:disabled {
+  background: #a5d6a7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.save-btn.saving {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Mess Info */
+.mess-info {
+  display: none; /* Hide by default */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mess-info input {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.mess-info input:readonly {
+  background: #f9f9f9;
+  color: #666;
+}
+
+.edit-active .mess-info {
+  display: grid; /* Show in edit mode */
+  border-color: #667eea;
+  background: #fcfdff;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  margin-top: 12px;
+}
+
+/* Day Tabs */
+.day-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding: 6px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.day-tabs::-webkit-scrollbar {
+  height: 3px;
+}
+
+.day-tabs::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.day-tabs::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.day-tab {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid transparent;
+}
+
+.day-tab:hover {
+  background: #efefef;
+}
+
+.day-tab.today:not(.active)::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 6px;
+  height: 6px;
+  background: #667eea;
+  border-radius: 50%;
+}
+
+.day-tab.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Day Content */
+.day-content {
+  display: none;
+}
+
+.day-content.active {
+  display: block;
+}
+
+/* Meal Tabs - Hidden */
+.meal-tabs {
+  display: none;
+}
+
+.meal-tab {
+  display: none;
+}
+
+/* Meal Content - Always visible and stacked */
+.meal-content-container {
+  display: flex;
+  flex-direction: row; /* Changed from column to row */
+  gap: 16px; /* Increased gap for side-by-side layout */
+  margin-bottom: 12px;
+  /* flex-wrap: wrap; // Removed to prevent stacking on mobile */
+}
+
+.meal-content {
+  display: block !important;
+  background: white;
+  border-radius: 16px; /* Even larger radius for a softer look */
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-grow: 1; /* Each card will take up equal space */
+  flex-basis: 0; /* Ensures flex-grow works correctly */
+  min-height: 380px; /* Increased height */
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.meal-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.meal-content h4 {
+  font-size: 1rem; /* Slightly larger heading */
+  color: var(--color-dark, #333);
+  margin: 0 0 16px 0; /* Increased bottom margin */
+  font-weight: 600;
+  padding-bottom: 12px; /* Add padding below heading */
+  border-bottom: 1px solid #f0f0f0; /* Add a separator line */
+}
+
+.day-content {
+  position: relative;
+  padding-bottom: 80px;
+}
+
+/* Menu Items */
+.menu-items-list {
+  flex-grow: 1; /* Make the list take up available vertical space */
+  overflow-y: auto; /* Add scroll if items overflow */
+  margin-bottom: 12px; /* Space before the add button */
+}
+
+.menu-item,
+.add-item-placeholder {  
+  position: relative;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  padding: 16px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: all 0.2s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.menu-item-icon,
+.add-item-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #e8e8e8, #ffffff);
+  color: #666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 auto 4px;
+  transition: all 0.2s ease;
+}
+
+.menu-item:nth-child(4n+1) .menu-item-icon {
+  background: linear-gradient(145deg, #c9e7fe, #e3f2fd);
+  color: #1976d2;
+}
+
+.menu-item:nth-child(4n+2) .menu-item-icon {
+  background: linear-gradient(145deg, #c8e6c9, #e8f5e9);
+  color: #388e3c;
+}
+
+.menu-item:nth-child(4n+3) .menu-item-icon {
+  background: linear-gradient(145deg, #ffecb3, #fff8e1);
+  color: #f57f17;
+}
+
+.menu-item:nth-child(4n+4) .menu-item-icon {
+  background: linear-gradient(145deg, #ffcdd2, #ffebee);
+  color: #c62828;
+}
+
+.add-item-button {
+  border: 2px dashed #ddd;
+  background: #f9f9f9;
+  color: #999;
+  cursor: pointer;
+}
+
+.add-item-button:hover {
+  background: #f0f0f0;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.menu-item:hover .menu-item-icon {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-text {
+  font-size: 0.8rem;
+}
+
+.menu-item-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.75rem;
+}
+
+.menu-item-price {
+  color: #999;
+  font-size: 0.65rem;
+}
+
+.add-item-btn-container {
+    margin-top: auto; /* Pushes the button to the bottom */
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.add-item-btn-large {
+    width: 100%;
+    padding: 10px;
+    border: 2px dashed #d0d0d0;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: #888;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.add-item-btn-large:hover {
+    background-color: #f0f0f0;
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.edit-item,
+.delete-item {
+    /* position: absolute; */ /* No longer needed */
+    width: 32px; /* Set a fixed width */
+    height: 32px; /* Set a fixed height */
+    background: #f0f2f5;
+    border-radius: 50%; /* Make them circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    font-size: 0.9rem; /* Adjust icon size */
+    transition: all 0.2s ease;
+    cursor: pointer;
+    padding: 0; /* Remove padding */
+    border: 1px solid #e0e0e0;
+    color: #555;
+}
+
+.delete-item {
+  /* right: 6px; */
+  color: #e74c3c;
+}
+
+.delete-item:hover {
+    background-color: #fdedec;
+    border-color: #e74c3c;
+}
+
+.edit-item {
+  /* No specific styles needed here now */
+}
+.edit-item:hover {
+    background-color: #eef0ff;
+    border-color: #667eea;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  color: #666;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.modal-content h3 {
+  margin: 0 0 16px;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.suggestions-container {
+  margin-bottom: 16px;
+  max-height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  background: #f7f7f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+}
+
+.suggestion-item:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateX(4px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+}
+
+.suggestion-item.selected {
+  background: #667eea;
+  color: white;
+  border-color: #4355b9;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.4);
+}
+
+.suggestion-item:last-child { margin-bottom: 0; }
+
+.modal-btn {
+  width: 100%;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.modal-btn.secondary {
+  background: #f0f2f5;
+  color: #333;
+  box-shadow: none;
+  border: 1px solid #e0e0e0;
+}
+
+.modal-btn.secondary:hover {
+  background: #e8e8e8;
+  transform: none;
+  box-shadow: none;
+}
+
+.custom-item-form {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.custom-item-form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+/* Edit Mode */
+.edit-mode-item {
+  display: none !important;
+}
+
+.edit-active .edit-mode-item {
+  display: flex !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px 12px;
+  }
+
+  .welcome-card {
+    padding: 24px;
+  }
+
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+
+  .controls-bar {
+    gap: 16px;
+  }
+
+  .day-content {
+    padding-bottom: 96px;
+  }
+
+  .add-meal-tab {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .menu-items-list {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 20px 12px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .welcome-card {
+    padding: 18px 16px;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+
+  .controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .control-item {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+
+  .mess-info {
+    grid-template-columns: 1fr;
+  }
+
+  .day-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .day-tab {
+    flex-shrink: 0;
+  }
+
+  .menu-items-list {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 24px 20px;
+  }
+}
+
+/* Quick inline spinner used when switching meal tabs */
+.quick-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255,255,255,0.6);
+  border-radius: 8px;
+  z-index: 8;
+}
+.spinner-small {
+  width: 36px;
+  height: 36px;
+  border: 4px solid rgba(102,126,234,0.25);
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* === Merged from messownerdashboard.css === */
+
+/* Vertical List Styles for Menu Items */
+.menu-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Space between list items */
+}
+
+.menu-item {
+    display: flex; /* Changed to flex */
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align to the left */
+    background-color: #f9f9f9;
+    padding: 12px 16px; /* Increased padding */
+    border-radius: 8px;
+    border: 1px solid #eee;
+    text-align: left; /* Override centered text */
+    position: relative; /* For edit/delete buttons if needed, but we are not using absolute */
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Hide the large icon box */
+.menu-item-icon {
+    display: none;
+}
+
+.menu-item-text {
+    flex-grow: 1; /* Allow text to take available space */
+    width: 100%;
+}
+
+.menu-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px; /* Space between text and buttons */
+    width: 100%;
+}
+
+.menu-item-price {
+    color: #777;
+    font-size: 0.85rem;
+    margin-left: 4px; /* Small space after the name */
+}
+
+/* Hide the '+' add item placeholder in the grid */
+.add-item-placeholder {
+    display: none;
+}
+
+/* Styles for delete icon in list view */
+.menu-item .delete-item-list {
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    margin-left: 8px;
+}
+
+.menu-item .delete-item-list:hover {
+    background-color: #fdedec;
+}
+
+}

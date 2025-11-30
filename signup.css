@@ -1,0 +1,346 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #f5a6a3 0%, #f8b4b0 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.signup-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 900px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  animation: slideInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Signup Card Side */
+.signup-card {
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.signup-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.signup-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.signup-header p {
+  color: #999;
+  font-size: 0.95rem;
+}
+
+/* Form Styles */
+#signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper i:first-child {
+  position: absolute;
+  left: 14px;
+  color: #f5a6a3;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #f5a6a3;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(245, 166, 163, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #bbb;
+}
+
+.helper-text {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 6px;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-item input[type="radio"] {
+  cursor: pointer;
+  accent-color: #f5a6a3;
+  width: 18px;
+  height: 18px;
+}
+
+.radio-item label {
+  margin: 0;
+  font-weight: 500;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.radio-item input[type="radio"]:checked + label {
+  color: #f5a6a3;
+  font-weight: 600;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  color: #999;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: #f5a6a3;
+}
+
+/* Signup Button */
+.signup-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #f5a6a3 0%, #f8b4b0 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(245, 166, 163, 0.3);
+  margin-top: 8px;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 166, 163, 0.4);
+}
+
+.signup-btn:active {
+  transform: translateY(0);
+}
+
+/* Footer */
+.signup-footer {
+  margin-top: 24px;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+}
+
+.signup-footer p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.signup-footer a {
+  color: #f5a6a3;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.signup-footer a:hover {
+  color: #f08076;
+  text-decoration: underline;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+/* Right Side */
+.signup-side {
+  background: linear-gradient(135deg, #f5a6a3 0%, #f8b4b0 100%);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.side-content h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.benefit-item {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+}
+
+.benefit-item:hover {
+  transform: translateY(-4px);
+}
+
+.benefit-item i {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.benefit-item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.benefit-item p {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .signup-container {
+    grid-template-columns: 1fr;
+  }
+
+  .signup-side {
+    display: none;
+  }
+
+  .signup-card {
+    padding: 32px 24px;
+  }
+
+  .signup-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .header-icon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-card {
+    padding: 24px 16px;
+  }
+
+  .signup-header {
+    margin-bottom: 24px;
+  }
+
+  .signup-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-icon {
+    font-size: 2rem;
+  }
+
+  .form-group input {
+    padding: 10px 12px 10px 36px;
+    font-size: 0.9rem;
+  }
+
+  .signup-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -1,0 +1,317 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  display: none;
+}
+
+/* Main Container */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* Welcome Card */
+.welcome-card {
+  background: linear-gradient(135deg, #f5a6a3, #f8b4b0);
+  padding: 32px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+
+.welcome-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.welcome-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #000;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  margin-left: 4px;
+}
+
+/* Hostel Grid */
+.hostel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+/* Hostel Card */
+.hostel-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.28s ease;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.hostel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.hostel-card:active {
+  transform: translateY(-3px);
+}
+
+/* Hostel Icon */
+.hostel-icon {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #f5a6a3, #f8b4b0);
+  border-radius: 10px;
+}
+
+/* Hostel Name */
+.hostel-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* Hostel Description */
+.hostel-desc {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f0f0f0;
+  color: #666;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e0e0e0;
+  color: #000;
+}
+
+.modal-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+#modal-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+#modal-text {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 24px 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-card {
+    padding: 24px;
+  }
+
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .hostel-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .hostel-card {
+    padding: 16px 12px;
+  }
+
+  .hostel-icon {
+    font-size: 2rem;
+    width: 52px;
+    height: 52px;
+  }
+
+  .hostel-name {
+    font-size: 0.95rem;
+  }
+
+  .hostel-desc {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 20px 12px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-date {
+    font-size: 0.9rem;
+  }
+
+  .welcome-card {
+    padding: 18px 16px;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .hostel-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .hostel-card {
+    padding: 14px 10px;
+  }
+
+  .hostel-icon {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+  }
+
+  .hostel-name {
+    font-size: 0.9rem;
+  }
+
+  .hostel-desc {
+    font-size: 0.75rem;
+  }
+
+  .modal {
+    width: 95%;
+    padding: 24px 20px;
+  }
+
+  .modal-icon {
+    font-size: 2.5rem;
+  }
+
+  #modal-title {
+    font-size: 1.2rem;
+  }
+
+  #modal-text {
+    font-size: 0.9rem;
+  }
+
+  .modal-btn {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+  }
+}

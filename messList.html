@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MessAura - Mess Canteen List</title>
+    
+        <!-- Prevent caching to ensure fresh data is always loaded -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Modern CSS -->
+  <link rel="stylesheet" href="messListStyle.css" />
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+      authDomain: "bhu-mess.firebaseapp.com",
+      databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "bhu-mess",
+      storageBucket: "bhu-mess.appspot.com",
+      messagingSenderId: "272028293626",
+      appId: "1:272028293626:web:85b7604008b5463e38ec43",
+      measurementId: "G-TTYFR01MK9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+  </script>
+</head>
+<body>
+  <div class="gradient-bg">
+    <div class="list-container">
+      <div class="header">
+        <h1>MessAura</h1>
+        <a href="login.html" class="login-icon"><i class="fas fa-user-circle"></i></a>
+      </div>
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search-input" placeholder="Search for a mess or canteen...">
+      </div>
+      <div class="tabs">
+        <button class="tab-link active" data-tab="mess-tab">Mess</button>
+        <button class="tab-link" data-tab="canteen-tab">Canteen</button>
+      </div>
+      <div id="mess-tab" class="tab-content active">
+        <h2><i class="fas fa-utensils"></i> Messes</h2>
+        <ul id="mess-list" class="list">
+          <!-- Example item -->
+          <li class="list-item-card">
+            <div class="card-header">SMD MESS</div>
+            <div class="mess-location"><i class="fas fa-map-marker-alt"></i>Location not specified</div>
+            <div class="status-indicator">
+              <span class="status-dot off"></span>
+              <span class="status-text off">Closed</span>
+            </div>
+            <div class="card-actions">
+              <button class="call-button"><i class="fas fa-phone-alt"></i></button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div id="canteen-tab" class="tab-content">
+        <h2><i class="fas fa-store"></i> Canteens</h2>
+        <ul id="canteen-list" class="list">
+          <li class="list-item-card">
+            <div class="card-header">No canteens found.</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="spinner-container" id="loading-spinner"><div class="spinner"></div></div>
+  </div>
+  <script src="messList.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - Admin</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="manageUsers.css">
+    <!-- Firebase 8.10.1 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+        authDomain: "bhu-mess.firebaseapp.com",
+        databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "bhu-mess",
+        storageBucket: "bhu-mess.firebasestorage.app",
+        messagingSenderId: "272028293626",
+        appId: "1:272028293626:web:85b7604008b5463e38ec43",
+        measurementId: "G-TTYFR01MK9"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Manage Mess Owners</h1>
+            <a href="admindashboard.html" class="back-link">← Back to Admin Dashboard</a>
+            <div class="master-toggle-container">
+                <label for="all-messes-status-toggle" class="toggle-label">All Messes Status:</label>
+                <label class="toggle-switch-wrapper">
+                    <input type="checkbox" id="all-messes-status-toggle">
+                    <span class="toggle-switch"></span>
+                </label>
+            </div>
+        </header>
+        <main>
+            <div id="loading-spinner" class="spinner-container">
+                <div class="spinner"></div>
+                <p>Loading users...</p>
+            </div>
+            <ul id="users-list" class="users-list">
+                <!-- User items will be injected here by JavaScript -->
+            </ul>
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <p>No mess owners found.</p>
+            </div>
+        </main>
+    </div>
+    <script src="manageUsers.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const usersList = document.getElementById('users-list');
+
+            if (usersList) {
+                usersList.addEventListener('click', (event) => {
+                    // Find the closest delete button to where the user clicked
+                    const deleteButton = event.target.closest('.delete-btn');
+
+                    if (deleteButton) {
+                        // Prevent the original delete action from running immediately
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const userItem = deleteButton.closest('.user-item');
+                        const messName = userItem.querySelector('.user-name').textContent;
+
+                        if (window.confirm(`Are you sure you want to delete the user "${messName}"? This action cannot be undone.`)) {
+                            // If confirmed, re-trigger the original click event on the button
+                            // This assumes manageUsers.js has its own listener on this button.
+                            deleteButton.click();
+                        }
+                    }
+                }, true); // Use capture phase to intercept the click first
+            }
+        });
+    </script>
+</body>
+</html>

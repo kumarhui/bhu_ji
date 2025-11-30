@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alumni Hostels</title>
+    <link rel="stylesheet" href="alumniHostelsStyle.css?v=2">
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>Alumni Hostels Dashboard</h1>
+        <p class="header-date">📅 Tue, Nov 25, 2025</p>
+    </div>
+
+    <main class="dashboard-container">
+        <div class="welcome-card">
+            <p class="welcome-subtitle">Welcome to,</p>
+            <h2 class="welcome-title">Alumni Hostels</h2>
+        </div>
+
+        <div class="section-title">Explore Hostels</div>
+
+        <div class="hostel-grid">
+            <div class="hostel-card" data-hostel="SMD">
+                <div class="hostel-icon">👥</div>
+                <h3 class="hostel-name">SMD Hostel</h3>
+                <p class="hostel-desc">Connect with alumni</p>
+            </div>
+
+            <div class="hostel-card" data-hostel="AND">
+                <div class="hostel-icon">👥</div>
+                <h3 class="hostel-name">AND Hostel</h3>
+                <p class="hostel-desc">Connect with alumni</p>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="dev-modal" class="modal-overlay" role="dialog" aria-hidden="true">
+        <div class="modal">
+            <button id="modal-x" aria-label="Close" class="modal-close">✕</button>
+            <div class="modal-icon">🔧</div>
+            <h3 id="modal-title">Coming Soon</h3>
+            <p id="modal-text">This hostel's alumni page is still in development.</p>
+            <button id="modal-close" class="modal-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.hostel-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const hostel = card.getAttribute('data-hostel');
+                if (hostel === 'SMD') {
+                    window.location.href = 'alumni.html';
+                } else {
+                    const modal = document.getElementById('dev-modal');
+                    document.getElementById('modal-title').textContent = hostel + ' Hostel';
+                    document.getElementById('modal-text').textContent = hostel + ' Hostel alumni page is coming soon. Stay tuned!';
+                    modal.style.display = 'flex';
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.getElementById('modal-close').focus();
+                }
+            });
+        });
+
+        const modal = document.getElementById('dev-modal');
+        function closeModal() {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        }
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('modal-x').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
+    </script>
+</body>
+</html>

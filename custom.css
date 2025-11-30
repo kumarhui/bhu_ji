@@ -1,0 +1,4 @@
+/* Custom styles to override template defaults */
+.logout-btn {
+    display: block !important;
+}

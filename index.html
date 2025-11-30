@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHU Ji Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <div class="dashboard-header">
+        <h1>BHU Ji Dashboard</h1>
+        <p class="header-date">📅 Tue, Nov 25, 2025</p>
+    </div>
+    <main class="dashboard-container">
+        <div class="welcome-card">
+            <p class="welcome-subtitle">Welcome to,</p>
+            <h2 class="welcome-title">BHU Ji Services</h2>
+        </div>
+        <div class="service-grid">
+            <div id="notes-card" class="service-card" style="cursor: pointer;">
+                <div class="service-icon">📚</div>
+                <h3 class="service-name">Notes, PYQ and Syllabus</h3>
+                <p class="service-desc">Find academic resources</p>
+            </div>
+            <a href="alumniHostels.html" class="service-card">
+                <div class="service-icon">👥</div>
+                <h3 class="service-name">BHU Alumni</h3>
+                <p class="service-desc">Connect with alumni</p>
+            </a>
+            <a href="messList.html" class="service-card">
+                <div class="service-icon">📊</div>
+                <h3 class="service-name">BHU Mess</h3>
+                <p class="service-desc">View mess list</p>
+            </a>
+            <a href="messLogin.html" class="service-card">
+                <div class="service-icon">🍽️</div>
+                <h3 class="service-name">Mess Login</h3>
+                <p class="service-desc">Manage mess details</p>
+            </a>
+            <div id="admin-login-card" class="service-card" style="cursor: pointer;">
+                <div class="service-icon">🚀</div>
+                <h3 class="service-name">Admin Login</h3>
+                <p class="service-desc">Access admin dashboard</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notes Modal -->
+    <div id="notes-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Choose a Resource</h2>
+                <button id="notes-modal-close" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <a href="https://drive.google.com/drive/u/2/folders/116XFzMyxgGi6TwMffEyU1wC31768v-Eu" class="modal-option-btn"><i class="fas fa-book-open"></i> Notes</a>
+                <a href="https://drive.google.com/drive/u/2/folders/13JfvxYzN6LRKpPx0vVY8ll-X2HcOFN5o" class="modal-option-btn"><i class="fas fa-file-alt"></i> PYQ</a>
+                <a href="https://drive.google.com/drive/u/2/folders/1a_JggtUczdvfrDzYzCUU9171eKrLCz9Y" class="modal-option-btn"><i class="fas fa-list-alt"></i> Syllabus</a>
+                <div id="notes-progress-bar-container" class="progress-bar-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Password Modal -->
+    <div id="admin-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Admin Access</h2>
+                <button id="admin-modal-close" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-wrapper">
+                    <input type="password" id="admin-password-input" placeholder="Enter password">
+                    <i class="fas fa-eye-slash toggle-password" id="admin-toggle-password"></i>
+                </div>
+                <p id="admin-password-error">Incorrect password. You are not allowed.</p>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="admin-remember-password">
+                        <span>Remember password</span>
+                    </label>
+                </div>
+                <button id="admin-password-submit" class="submit-btn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notesCard = document.getElementById('notes-card');
+            const notesModal = document.getElementById('notes-modal');
+            const closeModalBtn = document.getElementById('notes-modal-close');
+            const notesModalBody = notesModal.querySelector('.modal-body');
+            const progressBarContainer = document.getElementById('notes-progress-bar-container');
+
+            const adminLoginCard = document.getElementById('admin-login-card');
+            const adminPasswordModal = document.getElementById('admin-password-modal');
+            const closeAdminModalBtn = document.getElementById('admin-modal-close');
+            const adminPasswordInput = document.getElementById('admin-password-input');
+            const adminPasswordSubmit = document.getElementById('admin-password-submit');
+            const adminPasswordError = document.getElementById('admin-password-error');
+            const adminTogglePassword = document.getElementById('admin-toggle-password');
+            const adminRememberCheckbox = document.getElementById('admin-remember-password');
+
+            const openModal = () => {
+                notesModalBody.classList.remove('loading'); // Reset state
+                progressBarContainer.style.display = 'none';
+                notesModal.style.display = 'flex';
+            };
+
+            const closeModal = () => {
+                notesModalBody.classList.remove('loading');
+                progressBarContainer.style.display = 'none';
+                notesModal.style.display = 'none';
+            };
+
+            notesCard.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Close modal if user clicks outside the content
+            notesModal.addEventListener('click', (e) => {
+                if (e.target === notesModal) {
+                    closeModal();
+                }
+            });
+
+            // Show progress bar on modal link click
+            notesModal.querySelectorAll('.modal-option-btn').forEach(link => {
+                link.addEventListener('click', () => {
+                    notesModalBody.classList.add('loading');
+                    progressBarContainer.style.display = 'block'; // Show progress bar
+                });
+            });
+
+            const openAdminModal = () => {
+                // Check for remembered password
+                const rememberedPassword = localStorage.getItem('adminPassword');
+                if (rememberedPassword) {
+                    adminPasswordInput.value = rememberedPassword;
+                    adminRememberCheckbox.checked = true;
+                } else {
+                    adminPasswordInput.value = '';
+                    adminRememberCheckbox.checked = false;
+                }
+
+                adminPasswordError.style.display = 'none';
+                adminPasswordModal.style.display = 'flex';
+                adminPasswordInput.focus();
+            };
+
+            const closeAdminModal = () => {
+                adminPasswordModal.style.display = 'none';
+            };
+
+            const checkAdminPassword = () => {
+                if (adminPasswordInput.value === "Cvam@Cvam") {
+                    // Handle remember password
+                    if (adminRememberCheckbox.checked) {
+                        localStorage.setItem('adminPassword', adminPasswordInput.value);
+                    } else {
+                        localStorage.removeItem('adminPassword');
+                    }
+                    window.location.href = 'admindashboard.html';
+                } else {
+                    adminPasswordError.style.display = 'block';
+                }
+            };
+
+            adminLoginCard.addEventListener('click', openAdminModal);
+            closeAdminModalBtn.addEventListener('click', closeAdminModal);
+            adminPasswordSubmit.addEventListener('click', checkAdminPassword);
+            adminPasswordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAdminPassword();
+                }
+            });
+
+            adminTogglePassword.addEventListener('click', () => {
+                if (adminPasswordInput.type === 'password') {
+                    adminPasswordInput.type = 'text';
+                    adminTogglePassword.classList.remove('fa-eye-slash');
+                    adminTogglePassword.classList.add('fa-eye');
+                } else {
+                    adminPasswordInput.type = 'password';
+                    adminTogglePassword.classList.remove('fa-eye');
+                    adminTogglePassword.classList.add('fa-eye-slash');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

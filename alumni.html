@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BHU Alumni - Years</title>
+  <link rel="stylesheet" href="alumniStyle.css" />
+</head>
+<body>
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">M</div>
+      <h1 class="hero-title">SMD Alumni Network</h1>
+      <p class="hero-subtitle">Browse batches and connect with fellow alumni. Click a year to view members.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="years-view">
+      <div class="search-container" style="margin-bottom:18px;">
+        <span class="search-icon">🔎</span>
+        <input id="year-search" class="search-input" placeholder="Search years (e.g. 2019)" />
+      </div>
+      <div class="cards-container" id="cards-container"></div>
+    </div>
+    <div id="alumni-view" class="hidden">
+      <button id="back-to-years-button" class="back-button">&larr; Back to Years</button>
+      <div style="margin:18px 0 12px; display:flex; gap:12px; align-items:center;">
+        <h1 id="alumni-year-title" style="margin:0; flex:1"></h1>
+        <div style="min-width:240px;">
+          <input id="alumni-search" class="search-input" placeholder="Search alumni by name" />
+        </div>
+      </div>
+      <div class="alumni-container" id="alumni-container"></div>
+    </div>
+    <div id="profile-view" class="hidden">
+      <button id="back-to-alumni-button" class="back-button">&larr; Back to Alumni List</button>
+      <div id="profile-details"></div>
+    </div>
+    
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="spinner"></div>
+      <p>Loading alumni data…</p>
+    </div>
+  </div>
+  <a href="https://forms.gle/ai4JgUcyFuaW2g2D8" class="fab" target="_blank">
+    +
+  </a>
+  <script src="alumniJs.js"></script>
+</body>
+</html>
