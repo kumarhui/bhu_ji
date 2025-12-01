@@ -32,6 +32,14 @@
         </div>
 
         <div class="form-group">
+          <label for="mess-name">Mess / Canteen Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-store"></i>
+            <input type="text" id="mess-name" name="messName" placeholder="Enter your mess or canteen name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="phone">Phone Number</label>
           <div class="input-wrapper">
             <i class="fas fa-phone"></i>
@@ -67,11 +75,13 @@
         </div>
 
         <button type="submit" class="signup-btn">
-          <span>Create Account</span>
-          <i class="fas fa-check"></i>
+          <span class="btn-text">Create Account</span>
+          <i class="fas fa-check icon-check"></i>
+          <i class="fas fa-spinner fa-spin icon-loading" style="display: none;"></i>
         </button>
       </form>
 
+      <p id="feedback-message" style="text-align: center; margin-top: 15px; font-weight: 500;"></p>
       <div class="signup-footer">
         <p>Already have an account? <a href="messLogin.html">Login here</a></p>
         <a href="index.html" class="back-link">← Back to Home</a>
@@ -102,6 +112,23 @@
     </div>
   </div>
 
+  <!-- Firebase 8.10.1 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+      authDomain: "bhu-mess.firebaseapp.com",
+      databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "bhu-mess",
+      storageBucket: "bhu-mess.appspot.com",
+      messagingSenderId: "272028293626",
+      appId: "1:272028293626:web:85b7604008b5463e38ec43",
+      measurementId: "G-TTYFR01MK9"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script>
     // Toggle password visibility
     document.querySelectorAll('.toggle-password').forEach(function(icon) {
@@ -126,26 +153,96 @@
       });
     });
 
-    // Validate phone number and passwords match
+    // Handle signup form submission
     document.getElementById('signup-form').addEventListener('submit', function(e) {
-      var phone = document.getElementById('phone').value;
-      var password = document.getElementById('password').value;
-      var confirmPassword = document.getElementById('confirm-password').value;
-      var phonePattern = /^[6-9]\d{9}$/;
-      
+      e.preventDefault();
+
+      const form = e.target;
+      const userType = form.userType.value;
+      const messName = form.messName.value;
+      const phone = form.phone.value;
+      const email = form.email.value;
+      const password = form.password.value;
+      const confirmPassword = form['confirm-password'].value;
+
+      const signupBtn = form.querySelector('.signup-btn');
+      const btnText = signupBtn.querySelector('.btn-text');
+      const loadingIcon = signupBtn.querySelector('.icon-loading');
+      const checkIcon = signupBtn.querySelector('.icon-check');
+      const feedbackMessage = document.getElementById('feedback-message');
+
+      const phonePattern = /^[6-9]\d{9}$/;
+
+      // --- UI Feedback Functions ---
+      function showLoading(isLoading) {
+        if (isLoading) {
+          signupBtn.disabled = true;
+          btnText.textContent = 'Creating...';
+          loadingIcon.style.display = 'inline-block';
+          checkIcon.style.display = 'none';
+        } else {
+          signupBtn.disabled = false;
+          btnText.textContent = 'Create Account';
+          loadingIcon.style.display = 'none';
+          checkIcon.style.display = 'inline-block';
+        }
+      }
+
+      function showFeedback(message, isError = false) {
+        feedbackMessage.textContent = message;
+        feedbackMessage.style.color = isError ? '#e74c3c' : '#2ecc71';
+      }
+
+      // --- Validation ---
+      showFeedback(''); // Clear previous messages
+
+      if (messName.trim() === '') {
+        showFeedback('Please enter your mess or canteen name.', true);
+        return false;
+      }
+
       if (!phonePattern.test(phone)) {
-        alert('Please enter a valid 10-digit Indian phone number.');
-        e.preventDefault();
+        showFeedback('Please enter a valid 10-digit Indian phone number.', true);
         return false;
       }
-      
+
       if (password !== confirmPassword) {
-        alert('Passwords do not match. Please try again.');
-        e.preventDefault();
+        showFeedback('Passwords do not match. Please try again.', true);
         return false;
       }
+
+      // --- Firebase Signup Logic ---
+      showLoading(true);
+      const auth = firebase.auth();
+      const database = firebase.database();
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const user = userCredential.user;
+
+          // Save additional user info to Realtime Database
+          return database.ref('users/' + user.uid).set({
+            email: email,
+            phone: phone,
+            type: userType,
+            messName: messName,
+            messStatus: true, // Default status
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        })
+        .then(() => {
+          showLoading(false);
+          showFeedback('Account created successfully! Redirecting to login...');
+          setTimeout(() => {
+            window.location.href = 'messLogin.html';
+          }, 2000);
+        })
+        .catch(error => {
+          showLoading(false);
+          console.error("Signup Error:", error);
+          showFeedback(error.message, true);
+        });
     });
   </script>
-  <script src="signup.js"></script>
 </body>
 </html>
