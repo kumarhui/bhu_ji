@@ -601,19 +601,21 @@ body {
   color: #333;
 }
 
-.suggestion-item:hover {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
-  transform: translateX(4px);
-  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+/* Subtle hover for non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+    .suggestion-item:not(.selected):hover {
+        background-color: #f0f0f0;
+        border-color: #ddd;
+    }
 }
 
+/* Blue border for selected items */
 .suggestion-item.selected {
-  background: #667eea;
-  color: white;
-  border-color: #4355b9;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.4);
+    background-color: transparent;
+    border: 2px solid #4a90e2;
+    color: #333;
+    /* Adjust padding to account for the thicker border */
+    padding: 9px 13px;
 }
 
 .suggestion-item:last-child { margin-bottom: 0; }
