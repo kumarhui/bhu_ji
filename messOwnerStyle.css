@@ -582,7 +582,7 @@ body {
 
 .suggestions-container {
   margin-bottom: 16px;
-  max-height: 150px;
+  max-height: 250px;
   overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
