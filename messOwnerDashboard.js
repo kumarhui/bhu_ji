@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let saveTimeout;
         const debouncedSave = () => {
             if (!dashboardContainer.classList.contains('edit-active')) return;
-            clearTimeout(saveTimeout);
+            clearTimeout(saveTimeout);  
             saveTimeout = setTimeout(saveData, 1500);
         };
 
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function showAddItemModal(list) {
             currentMenuList = list;
             addItemModal.classList.add('active');
-            populateDefaultSuggestions();
+            populateSuggestions(foodSuggestions); // Show all suggestions initially
         }
 
         function hideAddItemModal() {
@@ -353,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalCustomItemInput.value = '';
                 modalCustomPriceInput.value = '';
                 modalSuggestions.innerHTML = '';
+                populateSuggestions(foodSuggestions); // Reset for next time
             }, 300);
             currentMenuList = null;
         }
@@ -360,9 +361,9 @@ document.addEventListener('DOMContentLoaded', function() {
         modalClose.addEventListener('click', hideAddItemModal);
         addItemModal.addEventListener('click', e => { if (e.target === addItemModal) hideAddItemModal(); });
 
-        function populateDefaultSuggestions() {
+        function populateSuggestions(suggestions) {
             modalSuggestions.innerHTML = '';
-            foodSuggestions.forEach(item => {
+            suggestions.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
                 div.textContent = item;
@@ -373,6 +374,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalSuggestions.appendChild(div);
             });
         }
+
+        modalCustomItemInput.addEventListener('input', () => {
+            const query = modalCustomItemInput.value.toLowerCase().trim();
+            const filteredSuggestions = foodSuggestions.filter(item => 
+                item.toLowerCase().includes(query)
+            );
+            populateSuggestions(filteredSuggestions);
+        });
 
         modalAddSelectedButton.addEventListener('click', () => {
             const selectedItems = modalSuggestions.querySelectorAll('.suggestion-item.selected');
@@ -404,8 +413,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!dayContent) return;
             const isEditMode = dashboardContainer.classList.contains('edit-active');
 
-            if (e.target.classList.contains('add-item-btn-large')) {
-                const list = e.target.closest('.menu-items-list');
+            const addItemButton = e.target.closest('.add-item-btn-large');
+            if (addItemButton) {
+                const mealContent = addItemButton.closest('.meal-content');
+                const list = mealContent.querySelector('.menu-items-list');
                 showAddItemModal(list);
                 return;
             }
