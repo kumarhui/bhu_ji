@@ -41,9 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 whatsappLink.style.display = 'none';
             }
 
+            const userType = (profileData.userType || 'mess').toLowerCase();
             // Render day tabs and content
             // The menu data is inside the 'weekdays' node
-            renderDays(ownerData.weekdays);
+            renderDays(ownerData.weekdays, userType);
         } else {
             messNameElement.textContent = 'Mess details not found.';
         }
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to render day tabs and content
-    function renderDays(menuData) {
+    function renderDays(menuData, userType) {
         dayTabsContainer.innerHTML = '';
         dayContentContainer.innerHTML = '';
 
@@ -84,10 +85,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Render meals for the day
             const dayData = menuData ? menuData[day.slice(0, 2)] : null; // Use 'Su', 'Mo', etc. for keys
             if (dayData && dayData.meals) {
-                renderMeals(dayContent, dayData.meals);
+                renderMeals(dayContent, dayData.meals, userType);
             } else {
                 // If no meals, show empty state
-                renderMeals(dayContent, null);
+                renderMeals(dayContent, null, userType);
             }
             dayContentContainer.appendChild(dayContent);
         });
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to render meals in a specific order
-    function renderMeals(container, mealsData) {
+    function renderMeals(container, mealsData, userType) {
         container.innerHTML = ''; // Clear previous content
         const mealOrder = ['Breakfast', 'Lunch', 'Dinner'];
 
@@ -117,7 +118,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         mealOrder.forEach(mealName => {
             if (mealsData && mealsData[mealName.toLowerCase()]) {
-                const mealCard = createMealCard(mealName, mealsData[mealName.toLowerCase()].items);
+                let displayMealName = mealName;
+                // If the user type is 'canteen', change the labels
+                if (userType === 'canteen') {
+                    if (mealName === 'Lunch') {
+                        displayMealName = 'Morning';
+                    } else if (mealName === 'Dinner') {
+                        displayMealName = 'Evening';
+                    }
+                }
+
+                const mealCard = createMealCard(displayMealName, mealName, mealsData[mealName.toLowerCase()].items);
                 if (mealName === 'Lunch' || mealName === 'Dinner') {
                     lunchAndDinnerCards.push(mealCard);
                 } else {
@@ -140,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to create a meal card
-    function createMealCard(mealName, mealItems) {
+    function createMealCard(displayMealName, originalMealName, mealItems) {
         const mealCard = document.createElement('div');
         mealCard.className = 'meal-card';
 
@@ -148,11 +159,11 @@ document.addEventListener('DOMContentLoaded', function () {
         mealTitle.className = 'meal-title';
         
         let iconClass = 'fa-utensils'; // Default icon
-        if (mealName === 'Breakfast') iconClass = 'fa-coffee';
-        if (mealName === 'Lunch') iconClass = 'fa-sun';
-        if (mealName === 'Dinner') iconClass = 'fa-moon';
+        if (originalMealName === 'Breakfast') iconClass = 'fa-coffee';
+        if (originalMealName === 'Lunch') iconClass = 'fa-sun';
+        if (originalMealName === 'Dinner') iconClass = 'fa-moon';
 
-        mealTitle.innerHTML = `<i class="fas ${iconClass}"></i> ${mealName}`;
+        mealTitle.innerHTML = `<i class="fas ${iconClass}"></i> ${displayMealName}`;
         mealCard.appendChild(mealTitle);
 
         const menuList = document.createElement('ul');

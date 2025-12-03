@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Make the check more robust to handle potential key variations like 'profite'
                 const profile = user.profile || user.profite;
 
-                if (profile) {
+                // If profile exists and isHidden is not explicitly true, show the card
+                if (profile && profile.isHidden !== true) {
                     const cardHtml = createMessCard(uid, profile);
                     // Handle 'userType' and 'user Type', and default to 'mess' if not specified
                     const userType = (profile.userType || profile['user Type'] || 'mess').toLowerCase().trim();
