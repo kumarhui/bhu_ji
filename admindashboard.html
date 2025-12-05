@@ -5,64 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="adminDashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-        }
-        .modal-header h2 { margin: 0; }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .suggestions-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 16px 0;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-        .suggestion-item {
-            background-color: #f9f9f9;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .add-suggestion-form { display: flex; gap: 8px; }
-        .add-suggestion-form input { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
-        .add-suggestion-form button { padding: 8px 12px; border: none; background-color: #007bff; color: white; border-radius: 6px; cursor: pointer; }
-        .service-card { cursor: pointer; }
-    </style>
 </head>
 <body>
     <div class="dashboard-header">
@@ -85,11 +29,11 @@
                 <h3 class="service-name">Add Suggestions</h3>
                 <p class="service-desc">Check system analytics</p>
             </div>
-            <div class="service-card">
+            <a href="adminsettings.html" id="settings-card" class="service-card">
                 <div class="service-icon">⚙️</div>
                 <h3 class="service-name">Settings</h3>
                 <p class="service-desc">Configure dashboard options</p>
-            </div>
+            </a>
             <div id="migrate-canteens-card" class="service-card" style="cursor: pointer;">
                 <div class="service-icon">🔄</div>
                 <h3 class="service-name">Migrate Canteens</h3>
@@ -117,59 +61,23 @@
 
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
-    <!-- Custom Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const migrateCard = document.getElementById('migrate-canteens-card');
-            if (!migrateCard) return;
-
-            migrateCard.addEventListener('click', () => {
-                if (!confirm('Are you sure you want to migrate canteen owners to a new "canteenOwners" node? This action cannot be undone.')) {
-                    return;
-                }
-
-                const db = firebase.database();
-                const sourceRef = db.ref('messOwners'); // Corrected: Read from 'messOwners'
-                const canteenOwnersRef = db.ref('canteenOwners');
-
-                migrateCard.querySelector('.service-desc').textContent = 'Migrating...';
-                migrateCard.style.cursor = 'not-allowed';
-                migrateCard.style.opacity = '0.6';
-
-                sourceRef.once('value', snapshot => {
-                    const data = snapshot.val();
-                    if (!data) {
-                        alert('No users found to migrate.');
-                        return;
-                    }
-
-                    const updates = {};
-                    let canteensFound = 0;
-
-                    for (const uid in data) {
-                        // Corrected: Check for 'userType' and handle case-insensitivity
-                        const userProfile = data[uid].profile;
-                        if (userProfile && userProfile.userType && userProfile.userType.toLowerCase() === 'canteen') {
-                            updates[`/messOwners/${uid}`] = null; // Mark for deletion
-                            updates[`/canteenOwners/${uid}`] = data[uid]; // Add to 'canteenOwners'
-                            canteensFound++;
-                        }
-                    }
-
-                    db.ref().update(updates)
-                        .then(() => alert(`${canteensFound} canteen owner(s) migrated successfully!`))
-                        .catch(error => alert(`Migration failed: ${error.message}`))
-                        .finally(() => {
-                            migrateCard.querySelector('.service-desc').textContent = 'Move canteen owners to a separate data node.';
-                            migrateCard.style.cursor = 'pointer';
-                            migrateCard.style.opacity = '1';
-                        });
-                });
-            });
-        });
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+            authDomain: "bhu-mess.firebaseapp.com",
+            databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bhu-mess",
+            storageBucket: "bhu-mess.firebasestorage.app",
+            messagingSenderId: "272028293626",
+            appId: "1:272028293626:web:85b7604008b5463e38ec43",
+            measurementId: "G-TTYFR01MK9"
+        };
+        firebase.initializeApp(firebaseConfig);
     </script>
+    <!-- Custom Script -->
     <script src="admindashboard.js"></script>
 </body>
 </html>

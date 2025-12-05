@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="adminsettings.css">
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
+            authDomain: "bhu-mess.firebaseapp.com",
+            databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bhu-mess",
+            storageBucket: "bhu-mess.firebasestorage.app",
+            messagingSenderId: "272028293626",
+            appId: "1:272028293626:web:85b7604008b5463e38ec43",
+            measurementId: "G-TTYFR01MK9"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="admindashboard.html" class="back-link" title="Back to Admin Dashboard">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Settings</h1>
+        </header>
+        <main class="settings-container">
+            <div class="settings-group">
+                <h2 class="group-title">Master Controls</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">All Messes Status</div>
+                        <div class="setting-desc">Turn all messes ON or OFF at once.</div>
+                    </div>
+                    <label class="toggle-switch-wrapper" for="all-messes-status-toggle">
+                        <input type="checkbox" id="all-messes-status-toggle">
+                        <span class="toggle-switch"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">All Canteens Status</div>
+                        <div class="setting-desc">Turn all canteens ON or OFF at once.</div>
+                    </div>
+                    <label class="toggle-switch-wrapper" for="all-canteens-status-toggle">
+                        <input type="checkbox" id="all-canteens-status-toggle">
+                        <span class="toggle-switch"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h2 class="group-title">Automation</h2>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-title">Auto Scheduler</div>
+                        <div class="setting-desc">Messes (11am-3pm, 7pm-11pm) & Canteens (7am-10am, 3:30pm-7pm).</div>
+                    </div>
+                    <label class="toggle-switch-wrapper" for="auto-scheduler-toggle" title="Enable or disable automatic on/off based on time">
+                        <input type="checkbox" id="auto-scheduler-toggle">
+                        <span class="toggle-switch"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h2 class="group-title">Scheduler Timings</h2>
+                <div class="setting-item-column">
+                    <div class="setting-title">Mess Timings</div>
+                    <div class="time-inputs-container">
+                        <div class="time-input-group">
+                            <input type="time" id="mess-start-1"> <span>to</span> <input type="time" id="mess-end-1">
+                        </div>
+                        <div class="time-input-group">
+                            <input type="time" id="mess-start-2"> <span>to</span> <input type="time" id="mess-end-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-item-column">
+                    <div class="setting-title">Canteen Timings</div>
+                    <div class="time-inputs-container">
+                        <div class="time-input-group">
+                            <input type="time" id="canteen-start-1"> <span>to</span> <input type="time" id="canteen-end-1">
+                        </div>
+                        <div class="time-input-group">
+                            <input type="time" id="canteen-start-2"> <span>to</span> <input type="time" id="canteen-end-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-footer">
+                    <button id="save-timings-btn" class="save-btn">
+                        <span class="btn-text">Save Timings</span>
+                        <i class="fas fa-spinner fa-spin icon-loading" style="display: none;"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="adminsettings.js"></script>
+</body>
+</html>

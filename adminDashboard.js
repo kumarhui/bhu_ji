@@ -1,28 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const firebaseConfig = {
-        apiKey: "AIzaSyBZ-7pydjL8cZ919jZqLaVMa37FYapCaLY",
-        authDomain: "bhu-mess.firebaseapp.com",
-        databaseURL: "https://bhu-mess-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "bhu-mess",
-        storageBucket: "bhu-mess.firebasestorage.app",
-        messagingSenderId: "272028293626",
-        appId: "1:272028293626:web:85b7604008b5463e38ec43",
-        measurementId: "G-TTYFR01MK9"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const suggestionsRef = database.ref('food_suggestions');
-
-    const suggestionsCard = document.getElementById('add-suggestions-card');
-    const modal = document.getElementById('suggestions-modal');
+    const suggestionsModal = document.getElementById('suggestions-modal');
+    const addSuggestionsCard = document.getElementById('add-suggestions-card');
     const closeModalBtn = document.getElementById('modal-close-btn');
     const suggestionsList = document.getElementById('suggestions-list');
     const addSuggestionForm = document.getElementById('add-suggestion-form');
     const newSuggestionInput = document.getElementById('new-suggestion-input');
 
-    suggestionsCard.addEventListener('click', () => {
-        modal.style.display = 'flex';
-        suggestionsRef.on('value', (snapshot) => {
+    const db = firebase.database();
+    const suggestionsRef = db.ref('food_suggestions');
+
+    function loadSuggestions() {
+        suggestionsRef.once('value').then(snapshot => {
             suggestionsList.innerHTML = '';
             if (snapshot.exists()) {
                 snapshot.forEach((childSnapshot) => {
@@ -35,11 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 suggestionsList.innerHTML = '<li class="suggestion-item">No suggestions yet.</li>';
             }
+        }).catch(error => {
+            console.error("Error loading suggestions:", error);
+            suggestionsList.innerHTML = '<li class="suggestion-item">Error loading suggestions.</li>';
         });
+    }
+
+    addSuggestionsCard.addEventListener('click', () => {
+        suggestionsModal.style.display = 'flex';
+        loadSuggestions();
     });
 
-    closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+    closeModalBtn.addEventListener('click', () => suggestionsModal.style.display = 'none');
+    suggestionsModal.addEventListener('click', (e) => { if (e.target === suggestionsModal) suggestionsModal.style.display = 'none'; });
 
     addSuggestionForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -49,4 +45,50 @@ document.addEventListener('DOMContentLoaded', () => {
             newSuggestionInput.value = '';
         }
     });
+
+    // --- Canteen Migration Logic ---
+    const migrateCard = document.getElementById('migrate-canteens-card');
+    if (migrateCard) {
+        migrateCard.addEventListener('click', () => {
+            if (!confirm('Are you sure you want to migrate canteen owners to a new "canteenOwners" node? This action cannot be undone.')) {
+                return;
+            }
+
+            const sourceRef = db.ref('messOwners');
+            const canteenOwnersRef = db.ref('canteenOwners');
+
+            migrateCard.querySelector('.service-desc').textContent = 'Migrating...';
+            migrateCard.style.cursor = 'not-allowed';
+            migrateCard.style.opacity = '0.6';
+
+            sourceRef.once('value', snapshot => {
+                const data = snapshot.val();
+                if (!data) {
+                    alert('No users found to migrate.');
+                    return;
+                }
+
+                const updates = {};
+                let canteensFound = 0;
+
+                for (const uid in data) {
+                    const userProfile = data[uid].profile;
+                    if (userProfile && userProfile.userType && userProfile.userType.toLowerCase() === 'canteen') {
+                        updates[`/messOwners/${uid}`] = null;
+                        updates[`/canteenOwners/${uid}`] = data[uid];
+                        canteensFound++;
+                    }
+                }
+
+                db.ref().update(updates)
+                    .then(() => alert(`${canteensFound} canteen owner(s) migrated successfully!`))
+                    .catch(error => alert(`Migration failed: ${error.message}`))
+                    .finally(() => {
+                        migrateCard.querySelector('.service-desc').textContent = 'Move canteen owners to a separate data node.';
+                        migrateCard.style.cursor = 'pointer';
+                        migrateCard.style.opacity = '1';
+                    });
+            });
+        });
+    }
 });
