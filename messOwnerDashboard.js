@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (viewLiveMenuBtn) {
             viewLiveMenuBtn.addEventListener('click', () => {
                 if (ownerUid) {
-                    window.open(`messDetail.html?uid=${ownerUid}&type=${ownerType}`, '_blank');
+                    window.location.href = `messDetail.html?uid=${ownerUid}&type=${ownerType}`;
                 }
             });
         }

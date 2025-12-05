@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const canteenList = document.getElementById('canteen-list');
     const loadingSpinner = document.getElementById('loading-spinner');
     const searchInput = document.getElementById('search-input');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdmin = urlParams.get('role') === 'admin';
+
     const tabs = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -56,8 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activeTab) {
                 sessionStorage.setItem('activeMessListTab', activeTab.dataset.tab);
             }
-            // Navigate to the detail page
-            window.location.href = `messDetail.html?uid=${uid}&type=${userType}`;
+
+            if (isAdmin) {
+                // Admin role: Navigate to the owner's dashboard
+                window.location.href = `messOwnerDashboard.html?uid=${uid}`;
+            } else {
+                // Default user role: Navigate to the public detail page
+                window.location.href = `messDetail.html?uid=${uid}&type=${userType}`;
+            }
         };
 
         li.innerHTML = `
