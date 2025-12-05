@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     listItem.dataset.uid = uid;
 
                     const statusClass = profile.messStatus ? 'open' : 'closed';
+                    const isHidden = profile.isHidden || false;
 
                     listItem.innerHTML = `
                         <div class="user-info">
@@ -42,13 +43,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                         <div class="user-actions">
-                            <button class="action-btn delete-btn" title="Delete User" data-uid="${uid}"><i class="fas fa-trash"></i></button>
+                            <label class="toggle-switch-wrapper" title="${isHidden ? 'Click to unhide' : 'Click to hide'}">
+                                <input type="checkbox" class="visibility-toggle" data-uid="${uid}" ${isHidden ? 'checked' : ''}>
+                                <span class="toggle-switch"></span>
+                            </label>
                         </div>
                     `;
                     usersList.appendChild(listItem);
 
-                    // Add click event to navigate to the dashboard
-                    listItem.addEventListener('click', () => {
+                    // Add click event to the user-info part only, to navigate to the dashboard
+                    const userInfo = listItem.querySelector('.user-info');
+                    userInfo.addEventListener('click', () => {
+                        // Stop propagation to prevent the main list listener from firing
                         window.location.href = `messOwnerDashboard.html?uid=${uid}`;
                     });
                 }
@@ -90,4 +96,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Handle visibility toggle clicks
+    usersList.addEventListener('click', (event) => {
+        const visibilityToggle = event.target.closest('.visibility-toggle');
+
+        if (visibilityToggle) {
+            event.preventDefault(); // Prevent the user item click event
+            event.stopPropagation();
+
+            const uid = visibilityToggle.dataset.uid;
+            const newHiddenState = visibilityToggle.checked;
+
+            dbRef.child(uid).child('profile/isHidden').set(newHiddenState)
+                .then(() => {
+                    console.log(`User ${uid} visibility set to ${newHiddenState}`);
+                    // Update the title for immediate feedback without waiting for a full re-render
+                    const label = visibilityToggle.closest('.toggle-switch-wrapper');
+                    if (label) label.title = newHiddenState ? 'Click to unhide' : 'Click to hide';
+                })
+                .catch(error => console.error("Error updating user visibility:", error));
+        }
+    });
 });

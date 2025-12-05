@@ -7,6 +7,67 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="manageUsers.css">
+    <style>
+        .master-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .master-toggle-container .toggle-label {
+            font-weight: 500;
+            color: #495057;
+            margin: 0;
+        }
+        .master-toggle-container .toggle-switch-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .master-toggle-container .toggle-switch-wrapper input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .master-toggle-container .toggle-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+        /* Styles for individual user toggles */
+        .user-actions .toggle-switch-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .user-actions .toggle-switch-wrapper input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .user-actions .toggle-switch {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+    </style>
     <!-- Firebase 8.10.1 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -29,14 +90,16 @@
     <div class="container">
         <header class="header">
             <h1>Manage Mess Owners</h1>
-            <a href="admindashboard.html" class="back-link">← Back to Admin Dashboard</a>
-            <div class="master-toggle-container">
-                <label for="all-messes-status-toggle" class="toggle-label">All Messes Status:</label>
+            <a href="admindashboard.html" class="back-link" title="Back to Admin Dashboard">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <label class="master-toggle-container" for="all-messes-status-toggle">
+                <span class="toggle-label">All Messes Status</span>
                 <label class="toggle-switch-wrapper">
                     <input type="checkbox" id="all-messes-status-toggle">
                     <span class="toggle-switch"></span>
                 </label>
-            </div>
+            </label>
         </header>
         <main>
             <div id="loading-spinner" class="spinner-container">
@@ -52,32 +115,5 @@
         </main>
     </div>
     <script src="manageUsers.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const usersList = document.getElementById('users-list');
-
-            if (usersList) {
-                usersList.addEventListener('click', (event) => {
-                    // Find the closest delete button to where the user clicked
-                    const deleteButton = event.target.closest('.delete-btn');
-
-                    if (deleteButton) {
-                        // Prevent the original delete action from running immediately
-                        event.preventDefault();
-                        event.stopPropagation();
-
-                        const userItem = deleteButton.closest('.user-item');
-                        const messName = userItem.querySelector('.user-name').textContent;
-
-                        if (window.confirm(`Are you sure you want to delete the user "${messName}"? This action cannot be undone.`)) {
-                            // If confirmed, re-trigger the original click event on the button
-                            // This assumes manageUsers.js has its own listener on this button.
-                            deleteButton.click();
-                        }
-                    }
-                }, true); // Use capture phase to intercept the click first
-            }
-        });
-    </script>
 </body>
 </html>

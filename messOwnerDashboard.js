@@ -2,18 +2,35 @@ document.addEventListener('DOMContentLoaded', function() {
         const dashboardContainer = document.querySelector('.dashboard-container');
         const dayTabsContainer = document.querySelector('.day-tabs');
         const dayContentContainer = document.getElementById('day-content-container');
-        const editModeToggle = document.getElementById('edit-mode-toggle');
         const messStatusToggle = document.getElementById('mess-status-toggle');
         const saveButton = document.getElementById('save-button');
-        const logoutButton = document.getElementById('logout-button'); // Get logout button
+        const menuToggleButton = document.getElementById('menu-toggle-button');
+        const optionsDropdown = document.getElementById('options-dropdown');
+        const logoutButton = document.getElementById('logout-button');
         const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
         const todayIndex = new Date().getDay();
         let foodSuggestions = []; // This will be populated from Firebase
+        let ownerType = 'mess'; // Default to 'mess'
         
+        // Always be in edit mode
+        dashboardContainer.classList.add('edit-active');
+
         const urlParams = new URLSearchParams(window.location.search);
         const ownerUid = urlParams.get('uid');
-        const profilePath = ownerUid ? `messOwners/${ownerUid}/profile` : null;
-        const weekdaysPath = ownerUid ? `messOwners/${ownerUid}/weekdays` : null;
+        
+        // These paths will be determined after we know the owner type
+        let profilePath = null;
+        let weekdaysPath = null;
+
+        // Helper to set paths based on owner type
+        function setDbPaths(type) {
+            ownerType = type; // Store the type globally
+            const dbRoot = type === 'canteen' ? 'canteenOwners' : 'messOwners';
+            if (ownerUid) {
+                profilePath = `${dbRoot}/${ownerUid}/profile`;
+                weekdaysPath = `${dbRoot}/${ownerUid}/weekdays`;
+            }
+        }
 
         let saveTimeout;
         const debouncedSave = () => {
@@ -101,7 +118,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 // If on a different page or no UID, don't auto-load. This is a safeguard.
                 return;
             }
-            // Load profile and weekdays data in parallel
+
+            // First, determine the user type by checking both nodes
+            const messOwnerRef = database.ref(`messOwners/${ownerUid}`);
+            const canteenOwnerRef = database.ref(`canteenOwners/${ownerUid}`);
+
+            messOwnerRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    setDbPaths('mess');
+                    loadDataForOwner();
+                } else {
+                    canteenOwnerRef.once('value').then(snapshot => {
+                        if (snapshot.exists()) {
+                            setDbPaths('canteen');
+                            loadDataForOwner();
+                        } else {
+                            alert('Error: User data not found. Please log in again.');
+                            window.location.href = 'messLogin.html';
+                        }
+                    });
+                }
+            });
+        }
+
+        function loadDataForOwner() {
             const profilePromise = database.ref(profilePath).once('value');
             const weekdaysPromise = database.ref(weekdaysPath).once('value');
 
@@ -183,16 +223,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        editModeToggle.addEventListener('change', function() {
-            dashboardContainer.classList.toggle('edit-active', this.checked);
-        });
-
         // Add event listener for the new edit button on the welcome card
-        const editMessDetailsBtn = document.getElementById('edit-mess-details-btn');
+        const editMessDetailsBtn = document.getElementById('edit-mess-details-btn'); // This is now a dropdown item
         if (editMessDetailsBtn) {
             editMessDetailsBtn.addEventListener('click', () => {
                 const welcomeCard = document.querySelector('.welcome-card');
                 const isEditing = welcomeCard.classList.toggle('details-editing');
+                const icon = editMessDetailsBtn.querySelector('i');
+                const text = editMessDetailsBtn.querySelector('span');
 
                 // Toggle visibility of text vs. input fields
                 document.querySelectorAll('.welcome-text').forEach(el => {
@@ -200,15 +238,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 document.querySelectorAll('.welcome-input').forEach(el => {
                     el.style.display = isEditing ? '' : 'none';
+                    if (isEditing) {
+                        // Focus the first input when entering edit mode
+                        document.getElementById('welcome-title-mess-name-input').focus();
+                    }
                 });
 
-                // Change icon to save/check when editing
-                const icon = editMessDetailsBtn.querySelector('i');
-                icon.className = isEditing ? 'fas fa-check' : 'fas fa-pencil-alt';
+                // Change icon and text to save/check when editing
+                icon.className = isEditing ? 'fas fa-save' : 'fas fa-pencil-alt';
+                text.textContent = isEditing ? 'Save Details' : 'Edit Details';
 
                 if (!isEditing) saveData(); // Save when clicking the checkmark
+                optionsDropdown.classList.remove('active'); // Close dropdown after action
             });
         }
+
+        // --- Live Menu Link ---
+        const viewLiveMenuBtn = document.getElementById('view-live-menu-btn');
+        if (viewLiveMenuBtn) {
+            viewLiveMenuBtn.addEventListener('click', () => {
+                if (ownerUid) {
+                    window.open(`messDetail.html?uid=${ownerUid}&type=${ownerType}`, '_blank');
+                }
+            });
+        }
+        // --- Options Menu Logic ---
+        if (menuToggleButton) {
+            menuToggleButton.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the document click listener from firing immediately
+                optionsDropdown.classList.toggle('active');
+            });
+        }
+        // Close dropdown if clicking outside
+        document.addEventListener('click', (e) => {
+            if (optionsDropdown && !optionsDropdown.contains(e.target) && !menuToggleButton.contains(e.target)) {
+                optionsDropdown.classList.remove('active');
+            }
+        });
+
 
         // Logout functionality
         if (logoutButton) {

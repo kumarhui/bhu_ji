@@ -219,15 +219,22 @@
       auth.createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
           const user = userCredential.user;
+          const dbPath = userType === 'canteen' ? 'canteenOwners' : 'messOwners';
+          const defaultName = userType === 'canteen' ? 'My Canteen' : 'My Mess';
 
           // Save additional user info to Realtime Database
-          return database.ref('users/' + user.uid).set({
-            email: email,
-            phone: phone,
-            type: userType,
-            messName: messName,
-            messStatus: true, // Default status
-            createdAt: firebase.database.ServerValue.TIMESTAMP
+          return database.ref(`${dbPath}/${user.uid}`).set({
+            profile: {
+              email: email,
+              phone: phone,
+              userType: userType,
+              messName: messName || defaultName,
+              messStatus: true, // Default status
+              createdAt: firebase.database.ServerValue.TIMESTAMP
+            },
+            weekdays: {
+              // You can initialize default weekdays here if needed
+            }
           });
         })
         .then(() => {

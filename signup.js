@@ -26,12 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     const user = userCredential.user;
                     console.log('Signup successful for user:', user.uid);
 
+                    // Set a dynamic default name based on user type
+                    const defaultMessName = userType === 'canteen' ? 'My Canteen' : 'My Mess';
+
                     // Now, save additional user data to the Realtime Database
                     const userRef = database.ref('messOwners/' + user.uid);
                     return userRef.set({
                         profile: {
                             email: email,
-                            messName: "My Mess", // Store messName in profile
+                            messName: defaultMessName, // Store dynamic messName in profile
                             phone: phone,
                             userType: userType,
                             messStatus: true, // Store messStatus in profile

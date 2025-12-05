@@ -61,29 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    // After successful login, check if their data exists in the Realtime DB.
-                    const userRef = database.ref('messOwners/' + user.uid);
-                    return userRef.once('value').then(snapshot => {
-                        if (!snapshot.exists()) {
-                            // Data is missing! Re-create it.
-                            console.warn(`Data for user ${user.uid} not found. Re-creating...`);
-                            return userRef.set({
-                                profile: {
-                                    email: user.email,
-                                    messName: "My Mess (New)",
-                                    phone: "", // Phone number is unknown at this point
-                                    userType: "mess", // Assume 'mess' as a default
-                                    messStatus: true,
-                                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                                },
-                                weekdays: {} // Create an empty weekdays object
-                            }).then(() => {
-                                // After re-creating data, proceed to dashboard.
-                                return user;
-                            });
+                    // After successful login, check both potential locations for the user's data.
+                    const messRef = database.ref('messOwners/' + user.uid);
+                    const canteenRef = database.ref('canteenOwners/' + user.uid);
+
+                    // Try to find the user in messOwners first
+                    return messRef.once('value').then(messSnapshot => {
+                        if (messSnapshot.exists()) {
+                            return user; // Found in messOwners, proceed.
                         }
-                        // Data exists, just proceed.
-                        return user;
+                        // Not in messOwners, check canteenOwners
+                        return canteenRef.once('value').then(canteenSnapshot => {
+                            if (canteenSnapshot.exists()) {
+                                return user; // Found in canteenOwners, proceed.
+                            }
+                            // Data is missing from both! This is an edge case.
+                            // For now, we'll log an error and let them in. The dashboard should handle missing data.
+                            // A more robust solution might be to re-create the data here if needed.
+                            console.error(`Data for user ${user.uid} not found in 'messOwners' or 'canteenOwners'.`);
+                            // We'll still let them log in, assuming the dashboard has fallbacks.
+                            return user;
+                        });
                     });
                 })
                 .then((user) => {

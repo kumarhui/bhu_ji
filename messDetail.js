@@ -8,20 +8,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const whatsappLink = document.getElementById('whatsapp-link');
 
     // Function to get mess ID from URL
-    function getMessId() {
+    function getUrlParams() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('uid'); // Corrected from 'id' to 'uid'
+        return {
+            uid: urlParams.get('uid'),
+            type: urlParams.get('type') || 'mess' // Default to 'mess' if type is not specified
+        };
     }
-    const messId = getMessId();
+    const { uid: messId, type: ownerType } = getUrlParams();
 
     if (!messId) {
         messNameElement.textContent = 'Mess not found.';
         loadingSpinner.style.display = 'none';
         return;
     }
-
-    // Fetch mess details
-    const messOwnerRef = database.ref('messOwners/' + messId);
+    
+    // Determine the correct database path based on the owner type
+    const dbPath = ownerType === 'canteen' ? 'canteenOwners/' : 'messOwners/';
+    const messOwnerRef = database.ref(dbPath + messId);
+    
     messOwnerRef.on('value', (snapshot) => {
         const ownerData = snapshot.val();
         if (ownerData && ownerData.profile) {
@@ -85,10 +90,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Render meals for the day
             const dayData = menuData ? menuData[day.slice(0, 2)] : null; // Use 'Su', 'Mo', etc. for keys
             if (dayData && dayData.meals) {
-                renderMeals(dayContent, dayData.meals, userType);
+                renderMeals(dayContent, dayData.meals, userType, day.slice(0, 2));
             } else {
                 // If no meals, show empty state
-                renderMeals(dayContent, null, userType);
+                renderMeals(dayContent, null, userType, day.slice(0, 2));
             }
             dayContentContainer.appendChild(dayContent);
         });
@@ -109,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to render meals in a specific order
-    function renderMeals(container, mealsData, userType) {
+    function renderMeals(container, mealsData, userType, dayKey) {
         container.innerHTML = ''; // Clear previous content
         const mealOrder = ['Breakfast', 'Lunch', 'Dinner'];
 
@@ -128,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-                const mealCard = createMealCard(displayMealName, mealName, mealsData[mealName.toLowerCase()].items);
+                const mealCard = createMealCard(displayMealName, mealName, mealsData[mealName.toLowerCase()].items, dayKey);
                 if (mealName === 'Lunch' || mealName === 'Dinner') {
                     lunchAndDinnerCards.push(mealCard);
                 } else {
@@ -151,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to create a meal card
-    function createMealCard(displayMealName, originalMealName, mealItems) {
+    function createMealCard(displayMealName, originalMealName, mealItems, dayKey) {
         const mealCard = document.createElement('div');
         mealCard.className = 'meal-card';
 
@@ -170,22 +175,120 @@ document.addEventListener('DOMContentLoaded', function () {
         menuList.className = 'menu-list';
 
         if (mealItems && Object.keys(mealItems).length > 0) {
-            for (const key in mealItems) {
-                const item = mealItems[key];
-                const listItem = document.createElement('li');
-                listItem.className = 'menu-item';
+            for (const itemId in mealItems) {
+                const item = mealItems[itemId];
+                const itemCard = document.createElement('li');
+                itemCard.className = 'menu-item-card';
 
-                const itemName = document.createElement('span');
-                itemName.className = 'item-name';
-                itemName.textContent = item.name;
 
-                const itemPrice = document.createElement('span');
-                itemPrice.className = 'item-price';
-                itemPrice.textContent = item.price ? `₹${item.price}` : '';
+                // New path: Save votes directly on the item object.
+                const votePath = `votes/${messId}/${dayKey}/${originalMealName.toLowerCase()}/${itemId}`;
+                const voteRef = database.ref(votePath);
 
-                listItem.appendChild(itemName);
-                listItem.appendChild(itemPrice);
-                menuList.appendChild(listItem);
+                itemCard.innerHTML = `
+                    <div class="item-details">
+                        <span class="item-name">${item.name}</span>
+                        ${item.price ? `<span class="item-price">₹${item.price}</span>` : ''}
+                    </div>
+                    <div class="item-actions">
+                        <button class="like-btn" data-item-id="${itemId}" aria-label="Like ${item.name}">
+                            <i class="far fa-thumbs-up"></i>
+                            <span class="vote-count">0</span>
+                        </button>
+                    </div>
+                `;
+
+                const likeBtn = itemCard.querySelector('.like-btn');
+                const likeCountSpan = likeBtn.querySelector('.vote-count');
+
+
+                // --- Voting Logic ---
+                const localVoteKey = `vote_${messId}_${itemId}`;
+
+                // NEW: Function to instantly update button colors and state
+                const updateButtonState = (newVoteState) => {
+                    if (newVoteState === 'like') {
+                        likeBtn.classList.add('active');
+                    } else { // null or undefined
+                        likeBtn.classList.remove('active');
+                    }
+                };
+
+                // Function to handle a vote transaction
+                const handleVote = (voteType) => {
+                    const currentVote = localStorage.getItem(localVoteKey);
+                    const newVote = (currentVote === voteType) ? null : voteType;
+                    
+                    // Add a flag to prevent the listener from overwriting the optimistic update
+                    itemCard.classList.add('is-voting');
+
+                    // 1. Optimistic UI Update: Change color instantly
+                    updateButtonState(newVote);
+
+                    // Trigger animation on like
+                    if (newVote === 'like') {
+                        likeBtn.classList.add('liked-animation');
+                        likeBtn.addEventListener('animationend', () => likeBtn.classList.remove('liked-animation'), { once: true });
+                    }
+
+                    // 2. Background Firebase Transaction
+                    voteRef.transaction(currentData => {
+                        if (currentData === null) {
+                            currentData = { likes: 0, dislikes: 0 };
+                        }
+
+                        if (currentVote === voteType) { // User is un-voting
+                            currentData[voteType + 's']--;
+                        } else { // New vote or switching vote
+                            currentData[voteType + 's']++;
+                            if (currentVote) { // Switching vote
+                                const otherVoteType = voteType === 'like' ? 'dislike' : 'like';
+                                currentData[otherVoteType + 's']--;
+                            }
+                        }
+                        return currentData;
+                    }, (error, committed, snapshot) => {
+                        if (error) {
+                            console.error('Transaction failed abnormally!', error);
+                        } else if (!committed) {
+                            // This can happen if another client writes to the same location.
+                            // The transaction will be re-run automatically, so no action is needed here.
+                            console.log('Vote transaction not committed, will retry.');
+                        } else {
+                            // 3. Update local storage only after successful commit
+                            if (newVote) localStorage.setItem(localVoteKey, newVote);
+                            else localStorage.removeItem(localVoteKey);
+                            // The on('value') listener will handle the UI update.
+
+                            // Remove the flag now that the process is complete
+                            itemCard.classList.remove('is-voting');
+                        }
+                    });
+                };
+
+                // Make the entire card double-clickable
+                itemCard.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    handleVote('like'); // Trigger the like action
+                });
+
+                // Listen for real-time vote updates from Firebase
+                voteRef.on('value', (snapshot) => {
+                    const votes = snapshot.val();
+                    const likes = votes?.likes || 0;
+
+                    // Update counts
+                    likeCountSpan.textContent = likes;
+
+                    // Only update the button state from the listener if the user is not currently interacting with it.
+                    // This prevents the listener from overwriting the optimistic UI update.
+                    if (!itemCard.classList.contains('is-voting')) {
+                        const localVote = localStorage.getItem(localVoteKey);
+                        updateButtonState(localVote);
+                    }
+                });
+
+                menuList.appendChild(itemCard);
             }
         } else {
             const noItem = document.createElement('li');

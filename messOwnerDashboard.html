@@ -30,16 +30,19 @@
       const auth = firebase.auth(); // Added Firebase Auth
     </script>
     <style>
-        /* Styles for the modern floating logout button */
-        #logout-button {
+        /* Styles for the new 3-dot menu */
+        .options-menu-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1000; /* Ensures it stays on top of other elements */
+            z-index: 1000;
+        }
+
+        #menu-toggle-button {
             background-color: #ffffff;
             color: #333333;
             border: 1px solid #e0e0e0;
-            border-radius: 50%; /* Makes it circular */
+            border-radius: 50%;
             width: 50px;
             height: 50px;
             font-size: 20px;
@@ -51,24 +54,65 @@
             transition: all 0.3s ease;
         }
 
-        #logout-button:hover {
+        #menu-toggle-button:hover {
             background-color: #f5f5f5;
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
+
+        .options-dropdown {
+            position: absolute;
+            top: 60px; /* Position below the button */
+            right: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 1px solid #eee;
+            overflow: hidden;
+            display: none; /* Hidden by default */
+            min-width: 160px;
+        }
+
+        .options-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+        .dropdown-item:hover { background-color: #f5f5f5; }
+        .dropdown-item i { color: #e74c3c; } /* Red color for logout icon */
+        #view-live-menu-btn i, #edit-mess-details-btn i { color: #3498db; } /* Blue for view/edit */
     </style>
 </head>
 <body>
-    <!-- New floating logout button -->
-    <button id="logout-button" class="logout-btn-icon" title="Logout">
-        <i class="fas fa-sign-out-alt"></i>
-    </button>
+    <div class="options-menu-container">
+        <button id="menu-toggle-button" title="Options">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div id="options-dropdown" class="options-dropdown">
+            <div id="view-live-menu-btn" class="dropdown-item">
+                <i class="fas fa-eye"></i>
+                <span>Show Live Menu</span>
+            </div>
+            <div id="edit-mess-details-btn" class="dropdown-item">
+                <i class="fas fa-pencil-alt"></i>
+                <span>Edit Details</span>
+            </div>
+            <div id="logout-button" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
 
     <main class="dashboard-container">
         <div class="welcome-card" style="position: relative;">
-            <button id="edit-mess-details-btn" class="edit-mode-item" title="Edit Mess Details">
-                <i class="fas fa-pencil-alt"></i>
-            </button>
             <p class="welcome-subtitle" id="welcome-mess-name">Welcome back,</p>
             <h2 class="welcome-title">
                 <span class="welcome-text" id="welcome-title-mess-name"></span>
@@ -82,11 +126,6 @@
         </div>
 
         <div class="controls-bar">
-            <label class="control-item">
-                <span class="control-label">Edit Mode:</span>
-                <input type="checkbox" id="edit-mode-toggle" checked>
-                <div class="toggle-switch"></div>
-            </label>
             <label class="control-item edit-mode-item">
                 <span class="control-label">Mess Status:</span>
                 <input type="checkbox" id="mess-status-toggle" checked>
@@ -117,16 +156,5 @@
     </div>
 
     <script src="messOwnerDashboard.js"></script>
-    <script>
-        // This script ensures that if "Edit Mode" is checked on page load,
-        // the corresponding functionality is activated immediately.
-        document.addEventListener('DOMContentLoaded', () => {
-            const editModeToggle = document.getElementById('edit-mode-toggle');
-            if (editModeToggle && editModeToggle.checked) {
-                // Dispatch a change event to trigger the handler in messOwnerDashboard.js
-                editModeToggle.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        });
-    </script>
 </body>
 </html>

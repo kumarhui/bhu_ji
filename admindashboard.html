@@ -90,6 +90,11 @@
                 <h3 class="service-name">Settings</h3>
                 <p class="service-desc">Configure dashboard options</p>
             </div>
+            <div id="migrate-canteens-card" class="service-card" style="cursor: pointer;">
+                <div class="service-icon">🔄</div>
+                <h3 class="service-name">Migrate Canteens</h3>
+                <p class="service-desc">Move canteen owners to a separate data node.</p>
+            </div>
         </div>
     </main>
 
@@ -115,6 +120,56 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <!-- Custom Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const migrateCard = document.getElementById('migrate-canteens-card');
+            if (!migrateCard) return;
+
+            migrateCard.addEventListener('click', () => {
+                if (!confirm('Are you sure you want to migrate canteen owners to a new "canteenOwners" node? This action cannot be undone.')) {
+                    return;
+                }
+
+                const db = firebase.database();
+                const sourceRef = db.ref('messOwners'); // Corrected: Read from 'messOwners'
+                const canteenOwnersRef = db.ref('canteenOwners');
+
+                migrateCard.querySelector('.service-desc').textContent = 'Migrating...';
+                migrateCard.style.cursor = 'not-allowed';
+                migrateCard.style.opacity = '0.6';
+
+                sourceRef.once('value', snapshot => {
+                    const data = snapshot.val();
+                    if (!data) {
+                        alert('No users found to migrate.');
+                        return;
+                    }
+
+                    const updates = {};
+                    let canteensFound = 0;
+
+                    for (const uid in data) {
+                        // Corrected: Check for 'userType' and handle case-insensitivity
+                        const userProfile = data[uid].profile;
+                        if (userProfile && userProfile.userType && userProfile.userType.toLowerCase() === 'canteen') {
+                            updates[`/messOwners/${uid}`] = null; // Mark for deletion
+                            updates[`/canteenOwners/${uid}`] = data[uid]; // Add to 'canteenOwners'
+                            canteensFound++;
+                        }
+                    }
+
+                    db.ref().update(updates)
+                        .then(() => alert(`${canteensFound} canteen owner(s) migrated successfully!`))
+                        .catch(error => alert(`Migration failed: ${error.message}`))
+                        .finally(() => {
+                            migrateCard.querySelector('.service-desc').textContent = 'Move canteen owners to a separate data node.';
+                            migrateCard.style.cursor = 'pointer';
+                            migrateCard.style.opacity = '1';
+                        });
+                });
+            });
+        });
+    </script>
     <script src="admindashboard.js"></script>
 </body>
 </html>

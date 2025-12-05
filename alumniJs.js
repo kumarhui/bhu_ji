@@ -50,31 +50,38 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error("Invalid data structure from Google Sheets");
       }
 
-      json.table.rows.forEach(row => {
+      json.table.rows.forEach((row, index) => {
         // Skip if row doesn't have data
         if (!row.c) return;
         
-        const name        = row.c[1]?.v || "";
-        const email       = row.c[2]?.v || "";
-        const year        = row.c[3]?.v || "";
-        const posted      = row.c[4]?.v || "";
-        const profileImg  = row.c[5]?.v || "";
-        const achievements= row.c[6]?.v || "";
-        const extra       = row.c[7]?.v || "";
-        const roomNo      = row.c[8]?.v || "";
+        const name              = row.c && row.c[1] ? row.c[1].v : "";  // Column B
+        const phone             = row.c && row.c[2] ? row.c[2].v : "";  // Column C
+        const year              = row.c && row.c[3] ? row.c[3].v : "";  // Column D - Batch Year
+        const educationalDetails= row.c && row.c[4] ? row.c[4].v : "";  // Column E
+        const profileImg        = row.c && row.c[5] ? row.c[5].v : "";  // Column F
+        const achievements      = row.c && row.c[6] ? row.c[6].v : "";  // Column G
+        const otherDetails      = row.c && row.c[7] ? row.c[7].v : "";  // Column H
+        const roomNo            = row.c && row.c[8] ? row.c[8].v : "";  // Column I
+        const instagram         = row.c && row.c[9] ? row.c[9].v : "";  // Column J
+        const facebook          = row.c && row.c[10] ? row.c[10].v : ""; // Column K
+        const linkedin          = row.c && row.c[11] ? row.c[11].v : ""; // Column L
 
         // Skip rows without year or name
         if (!year || !name) return;
         
         if (!data[year]) data[year] = [];
         data[year].push({ 
-          name, 
-          profileImg: profileImg || "", 
-          email, 
-          posted, 
-          achievements, 
-          extra, 
-          roomNo 
+          name,
+          phone,
+          year,
+          educationalDetails,
+          profileImg: profileImg || "",
+          achievements,
+          otherDetails,
+          roomNo,
+          instagram,
+          facebook,
+          linkedin
         });
         yearsSet.add(year);
       });
@@ -222,13 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
     profileDetails.innerHTML = `
       ${avatarHtml}
       <h2>${alumnus.name || 'Unknown'}</h2>
+      ${alumnus.phone ? `<div class="profile-item">
+        <strong><i class="fas fa-phone"></i> Phone No.</strong>
+        <p><a href="tel:${alumnus.phone}">${alumnus.phone}</a></p>
+      </div>` : ""}
       <div class="profile-item">
-        <strong><i class="fas fa-envelope"></i> Email</strong>
-        <p>${alumnus.email || 'Not provided'}</p>
-      </div>
-      <div class="profile-item">
-        <strong><i class="fas fa-map-marker-alt"></i> Currently Posted</strong>
-        <p>${alumnus.posted || 'Not provided'}</p>
+        <strong><i class="fas fa-user-graduate"></i> Educational Details</strong>
+        <p>${alumnus.educationalDetails || 'Not provided'}</p>
       </div>
       <div class="profile-item">
         <strong><i class="fas fa-trophy"></i> Achievements</strong>
@@ -236,12 +243,23 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       ${alumnus.roomNo ? `<div class="profile-item">
         <strong><i class="fas fa-door-open"></i> Room No.</strong>
-        <p>${alumnus.roomNo}</p>
+        <p>${alumnus.roomNo || 'Not provided'}</p>
       </div>` : ""}
-      ${alumnus.extra ? `<div class="profile-item">
+      ${alumnus.otherDetails ? `<div class="profile-item">
         <strong><i class="fas fa-info-circle"></i> Other Details</strong>
-        <p>${alumnus.extra}</p>
+        <p>${alumnus.otherDetails}</p>
       </div>` : ""}
+      <div class="social-links">
+        ${alumnus.instagram ? `<a href="${alumnus.instagram}" target="_blank" class="social-icon instagram" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>` : ""}
+        ${alumnus.facebook ? `<a href="${alumnus.facebook}" target="_blank" class="social-icon facebook" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>` : ""}
+        ${alumnus.linkedin ? `<a href="${alumnus.linkedin}" target="_blank" class="social-icon linkedin" title="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>` : ""}
+      </div>
     `;
     
     // Scroll to top

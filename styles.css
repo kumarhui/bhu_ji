@@ -258,21 +258,49 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding-top: 0; /* Adjust padding as header has enough */
 }
-#admin-password-modal input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
+
+#admin-password-modal .modal-header {
+    text-align: center;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#admin-password-modal .modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#admin-password-modal #admin-password-input {
+    padding: 12px 12px 12px 40px; /* Add padding for icon */
+    border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+#admin-password-modal #admin-password-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+#admin-password-modal .input-wrapper .fa-lock {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
 #admin-password-modal button.submit-btn {
     padding: 12px;
     border: none;
     border-radius: 8px;
     background-color: #667eea;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -282,7 +310,7 @@ body {
 #admin-password-error {
     color: #f56565;
     font-size: 0.9rem;
-    margin-top: -8px;
+    margin: -8px 0;
     display: none;
 }
 
@@ -294,7 +322,12 @@ body {
 
 .input-wrapper input {
     width: 100%;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
     padding-right: 40px; /* Make space for the icon */
+}
+
+#admin-password-modal .input-wrapper input {
+    padding-right: 40px; /* Keep space for eye icon */
 }
 
 .toggle-password {
@@ -326,7 +359,7 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-}
+
 
 /* Progress Bar Styles */
 .progress-bar-container {
