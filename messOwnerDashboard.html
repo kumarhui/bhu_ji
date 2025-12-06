@@ -107,7 +107,7 @@
         }
         .dropdown-item:hover { background-color: #f5f5f5; }
         .dropdown-item i { color: #e74c3c; } /* Red color for logout icon */
-        #view-live-menu-btn i, #edit-mess-details-btn i { color: #3498db; } /* Blue for view/edit */
+        #view-live-menu-btn i, #edit-mess-details-btn i, #settings-btn i { color: #3498db; } /* Blue for view/edit/settings */
 
         /* Styles for the 'Add to all days' toggle in the modal */
         .modal-toggle-container {
@@ -342,6 +342,21 @@
             background-color: #c0392b;
         }
 
+        /* Styles for auto-scheduler feedback bar */
+        .feedback-bar {
+            display: none; /* Hidden by default */
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #e8f4fd;
+            color: #3498db;
+            border: 1px solid #bde0f7;
+            font-weight: 500;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+
     </style>
 </head>
 <body>
@@ -358,6 +373,10 @@
                 <i class="fas fa-pencil-alt"></i>
                 <span>Edit Details</span>
             </div>
+            <div id="settings-btn" class="dropdown-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
             <div id="logout-button" class="dropdown-item">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
@@ -366,6 +385,9 @@
     </div>
 
     <main class="dashboard-container">
+        <!-- Feedback bar for auto-scheduler -->
+        <div id="auto-scheduler-feedback" class="feedback-bar"></div>
+
         <div class="welcome-card" style="position: relative;">
             <p class="welcome-subtitle" id="welcome-mess-name">Welcome back,</p>
             <h2 class="welcome-title">

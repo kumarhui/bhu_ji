@@ -162,6 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('welcome-mess-email').innerHTML = `<i class="fas fa-envelope"></i> ${profileData.email || 'No email provided'}`;
                     document.getElementById('welcome-mess-phone').innerHTML = `<i class="fas fa-phone"></i> ${phone}`;
                     document.getElementById('welcome-mess-phone-input').value = phone === 'No phone provided' ? '' : phone;
+
+                    // Run the auto-scheduler logic with the loaded settings
+                    runAutoScheduler(profileData.settings);
                 }
 
                 if (weekdaysSnapshot.exists()) {
@@ -222,6 +225,60 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        function runAutoScheduler(settings) {
+            if (!settings || !settings.autoSchedulerEnabled) {
+                return; // Scheduler is not active for this user
+            }
+
+            const feedbackBar = document.getElementById('auto-scheduler-feedback');
+            feedbackBar.textContent = 'Checking auto-scheduler timings...';
+            feedbackBar.style.display = 'block';
+
+            const timings = settings.timings?.[ownerType];
+            if (!timings) {
+                console.log('Auto-scheduler: No timings found for user type:', ownerType);
+                return;
+            }
+
+            const now = new Date();
+            const currentTime = now.getHours() + now.getMinutes() / 60;
+
+            const timeToDecimal = (timeStr) => {
+                if (!timeStr) return null;
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours + (minutes / 60);
+            };
+
+            const start1 = timeToDecimal(timings.start1);
+            const end1 = timeToDecimal(timings.end1);
+            const start2 = timeToDecimal(timings.start2);
+            const end2 = timeToDecimal(timings.end2);
+
+            let shouldBeOpen = false;
+            if (start1 !== null && end1 !== null && currentTime >= start1 && currentTime < end1) {
+                shouldBeOpen = true;
+            }
+            if (start2 !== null && end2 !== null && currentTime >= start2 && currentTime < end2) {
+                shouldBeOpen = true;
+            }
+
+            const isCurrentlyOpen = messStatusToggle.checked;
+
+            if (shouldBeOpen !== isCurrentlyOpen) {
+                // The status needs to be changed
+                messStatusToggle.checked = shouldBeOpen;
+                saveMessStatus(); // Save the new status to Firebase
+
+                // Update feedback to show the change
+                feedbackBar.textContent = `Auto-scheduler has set your status to "${shouldBeOpen ? 'Open' : 'Closed'}" based on your schedule.`;
+            } else {
+                // If no change was needed, update the message and hide it after a delay
+                feedbackBar.textContent = 'Status is up to date with your schedule.';
+                setTimeout(() => {
+                    feedbackBar.style.display = 'none';
+                }, 3000); // Hide after 3 seconds
+            }
+        }
         // Add event listener for the new edit button on the welcome card
         const editMessDetailsBtn = document.getElementById('edit-mess-details-btn'); // This is now a dropdown item
         if (editMessDetailsBtn) {
@@ -258,6 +315,16 @@ document.addEventListener('DOMContentLoaded', function() {
             viewLiveMenuBtn.addEventListener('click', () => {
                 if (ownerUid) {
                     window.location.href = `messDetail.html?uid=${ownerUid}&type=${ownerType}`;
+                }
+            });
+        }
+
+        // --- Settings Page Link ---
+        const settingsBtn = document.getElementById('settings-btn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                if (ownerUid) {
+                    window.location.href = `messownersettings.html?uid=${ownerUid}&type=${ownerType}`;
                 }
             });
         }
