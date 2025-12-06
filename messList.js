@@ -104,45 +104,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const fetchData = () => {
-        showLoading(true);
+    showLoading(true);
+    let messLoaded = false;
+    let canteenLoaded = false;
 
-        const messPromise = messRef.once('value');
-        const canteenPromise = canteenRef.once('value');
-
-        Promise.all([messPromise, canteenPromise]).then(([messSnapshot, canteenSnapshot]) => {
-            allMesses = [];
-            if (messSnapshot.exists()) {
-                messSnapshot.forEach(childSnapshot => {
-                    const messData = childSnapshot.val();
-                    // Don't show if isHidden is true in the profile
-                    if (!messData.profile?.isHidden) {
-                        allMesses.push({ uid: childSnapshot.key, data: messData });
-                    }
-                });
-            }
-
-            allCanteens = [];
-            if (canteenSnapshot.exists()) {
-                canteenSnapshot.forEach(childSnapshot => {
-                    const canteenData = childSnapshot.val();
-                    if (!canteenData.profile?.isHidden) {
-                        allCanteens.push({ uid: childSnapshot.key, data: canteenData });
-                    }
-                });
-            }
-
-            renderList(allMesses, messList, 'No messes found.');
-            renderList(allCanteens, canteenList, 'No canteens found.');
-
-        }).catch(error => {
-            console.error("Error fetching data: ", error);
-            messList.innerHTML = `<li class="list-item-card"><div class="card-header">Error loading messes.</div></li>`;
-            canteenList.innerHTML = `<li class="list-item-card"><div class="card-header">Error loading canteens.</div></li>`;
-        }).finally(() => {
+    const checkAllLoaded = () => {
+        if (messLoaded && canteenLoaded) {
             showLoading(false);
-        });
+        }
     };
+
+    // Set up a real-time listener for messes
+    messRef.on('value', (snapshot) => {
+        allMesses = [];
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const messData = childSnapshot.val();
+                if (!messData.profile?.isHidden) {
+                    allMesses.push({ uid: childSnapshot.key, data: messData });
+                }
+            });
+        }
+        filterData(); // Re-render the list with the new data
+        messLoaded = true;
+        checkAllLoaded();
+    }, (error) => {
+        console.error("Error fetching messes: ", error);
+        messList.innerHTML = `<li class="list-item-card"><div class="card-header">Error loading messes.</div></li>`;
+    });
+
+    // Set up a real-time listener for canteens
+    canteenRef.on('value', (snapshot) => {
+        allCanteens = [];
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const canteenData = childSnapshot.val();
+                if (!canteenData.profile?.isHidden) {
+                    allCanteens.push({ uid: childSnapshot.key, data: canteenData });
+                }
+            });
+        }
+        filterData(); // Re-render the list with the new data
+        canteenLoaded = true;
+        checkAllLoaded();
+    }, (error) => {
+        console.error("Error fetching canteens: ", error);
+        canteenList.innerHTML = `<li class="list-item-card"><div class="card-header">Error loading canteens.</div></li>`;
+    });
 
     const filterData = () => {
         const query = searchInput.value.toLowerCase();
@@ -171,7 +179,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     searchInput.addEventListener('input', filterData);
-
-    // Initial data fetch
-    fetchData();
 });

@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const userType = (profileData.userType || 'mess').toLowerCase();
             // Render day tabs and content
             // The menu data is inside the 'weekdays' node
+            scrollToToday();
             renderDays(ownerData.weekdays, userType);
         } else {
             messNameElement.textContent = 'Mess details not found.';
@@ -60,6 +61,15 @@ document.addEventListener('DOMContentLoaded', function () {
         loadingSpinner.style.display = 'none';
     });
 
+    function scrollToToday() {
+        // A small delay ensures the elements are in the DOM and ready to be scrolled.
+        setTimeout(() => {
+            const todayTab = dayTabsContainer.querySelector('.day-tab.today');
+            if (todayTab) {
+                todayTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }, 100);
+    }
     // Function to render day tabs and content
     function renderDays(menuData, userType) {
         dayTabsContainer.innerHTML = '';
@@ -76,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (index === today) {
                 dayTab.classList.add('active');
+                dayTab.classList.add('today');
             }
 
             dayTabsContainer.appendChild(dayTab);
@@ -111,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById(`content-${tab.dataset.day}`).classList.add('active');
             });
         });
+        scrollToToday();
     }
 
     // Function to render meals in a specific order
