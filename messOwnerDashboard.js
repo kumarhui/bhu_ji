@@ -414,7 +414,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const editModalNameInput = document.getElementById('modal-edit-item-name');
         const editModalPriceInput = document.getElementById('modal-edit-item-price');
         const editModalSaveButton = document.getElementById('modal-save-changes-button');
+        const editForAllDaysToggle = document.getElementById('edit-for-all-days-toggle');
         let currentItemToEdit = null;
+
+        // --- Delete Item Modal Elements ---
+        const deleteItemModal = document.getElementById('delete-item-modal');
+        const deleteModalClose = deleteItemModal.querySelector('.modal-close');
+        const deleteConfirmationText = document.getElementById('delete-item-confirmation-text');
+        const deleteForAllDaysToggle = document.getElementById('delete-for-all-days-toggle');
+        const cancelDeleteButton = document.getElementById('modal-cancel-delete-button');
+        const confirmDeleteButton = document.getElementById('modal-confirm-delete-button');
 
 
         const modalClose = document.querySelector('.modal-close');
@@ -452,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
             currentItemToEdit = itemEl;
             editModalNameInput.value = itemEl.dataset.name;
             editModalPriceInput.value = itemEl.dataset.price;
+            editForAllDaysToggle.checked = false; // Reset toggle
             editItemModal.classList.add('active');
             editModalNameInput.focus();
         }
@@ -465,13 +475,82 @@ document.addEventListener('DOMContentLoaded', function() {
         editItemModal.addEventListener('click', e => { if (e.target === editItemModal) hideEditItemModal(); });
 
         editModalSaveButton.addEventListener('click', () => {
-            if (currentItemToEdit) {
-                currentItemToEdit.dataset.name = editModalNameInput.value.trim();
-                currentItemToEdit.dataset.price = editModalPriceInput.value.trim();
+            if (!currentItemToEdit) return;
+
+            const newName = editModalNameInput.value.trim();
+            const newPrice = editModalPriceInput.value.trim();
+            const editAll = editForAllDaysToggle.checked;
+
+            const originalName = currentItemToEdit.dataset.name;
+            const sourceMealContent = currentItemToEdit.closest('.meal-content');
+            const mealName = sourceMealContent.dataset.name;
+
+            if (editAll) {
+                // Iterate through all instances of this meal type across all days
+                document.querySelectorAll(`.meal-content[data-name="${mealName}"]`).forEach(mealContent => {
+                    const list = mealContent.querySelector('.menu-items-list');
+                    // Find an item with either the new name or the original name
+                    let existingItem = Array.from(list.querySelectorAll('.menu-item')).find(
+                        item => item.dataset.name === newName || item.dataset.name === originalName
+                    );
+
+                    if (existingItem) { // If it exists, update it
+                        existingItem.dataset.name = newName;
+                        existingItem.dataset.price = newPrice;
+                        updateMenuItemDisplay(existingItem);
+                    } else { // If it doesn't exist, add it
+                        addMenuItem(list, newName, newPrice);
+                    }
+                });
+            } else { // Original behavior: update only the single item that was clicked
+                currentItemToEdit.dataset.name = newName;
+                currentItemToEdit.dataset.price = newPrice;
                 updateMenuItemDisplay(currentItemToEdit);
+            }
                 hideEditItemModal();
                 debouncedSave();
+        });
+
+        // --- Delete Item Modal Logic ---
+        let currentItemToDelete = null;
+
+        function showDeleteItemModal(itemEl) {
+            currentItemToDelete = itemEl;
+            deleteConfirmationText.textContent = `Are you sure you want to delete "${itemEl.dataset.name}"?`;
+            deleteForAllDaysToggle.checked = false; // Reset toggle
+            deleteItemModal.classList.add('active');
+        }
+
+        function hideDeleteItemModal() {
+            deleteItemModal.classList.remove('active');
+            currentItemToDelete = null;
+        }
+
+        deleteModalClose.addEventListener('click', hideDeleteItemModal);
+        cancelDeleteButton.addEventListener('click', hideDeleteItemModal);
+        deleteItemModal.addEventListener('click', e => { if (e.target === deleteItemModal) hideDeleteItemModal(); });
+
+        confirmDeleteButton.addEventListener('click', () => {
+            if (!currentItemToDelete) return;
+
+            const deleteAll = deleteForAllDaysToggle.checked;
+            const itemName = currentItemToDelete.dataset.name;
+
+            if (deleteAll) {
+                const sourceMealContent = currentItemToDelete.closest('.meal-content');
+                const mealName = sourceMealContent.dataset.name;
+
+                // Find and delete all instances of this item in the same meal type
+                document.querySelectorAll(`.meal-content[data-name="${mealName}"] .menu-item`).forEach(itemEl => {
+                    if (itemEl.dataset.name === itemName) {
+                        itemEl.remove();
+                    }
+                });
+            } else {
+                currentItemToDelete.remove(); // Original behavior: delete only the single item
             }
+            hideDeleteItemModal();
+            debouncedSave();
         });
         // --- Modal Tab Logic ---
         if (modalTabs) {
@@ -585,10 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (e.target.closest('.delete-item')) {
                 const itemEl = e.target.closest('.menu-item');
-                if (window.confirm(`Are you sure you want to delete "${itemEl.dataset.name}"?`)) {
-                    itemEl.remove();
-                    debouncedSave();
-                }
+                showDeleteItemModal(itemEl);
             } else if (e.target.closest('.edit-item')) {
                 showEditItemModal(e.target.closest('.menu-item'));
             }

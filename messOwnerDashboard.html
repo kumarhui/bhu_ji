@@ -326,6 +326,22 @@
             font-size: 1.2em;
             line-height: 1;
         }
+
+        /* Styles for modal button groups and danger state */
+        .modal-btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+        .modal-btn.danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .modal-btn.danger:hover {
+            background-color: #c0392b;
+        }
+
     </style>
 </head>
 <body>
@@ -440,11 +456,47 @@
                     <label for="modal-edit-item-price">Price (optional)</label>
                     <input type="number" id="modal-edit-item-price" placeholder="e.g., 55">
                 </div>
+                <!-- Add to all days toggle -->
+                <div class="modal-toggle-container" style="margin-top: 5px; margin-bottom: 15px;">
+                    <div class="toggle-card-text">
+                        <span class="toggle-card-title">Apply to all days</span>
+                        <span class="toggle-card-subtitle">Update this item everywhere.</span>
+                    </div>
+                    <label class="control-item">
+                        <input type="checkbox" id="edit-for-all-days-toggle">
+                        <div class="toggle-switch"></div>
+                    </label>
+                </div>
                 <button id="modal-save-changes-button" class="modal-btn">Save Changes</button>
             </div>
         </div>
     </div>
 
+    <!-- Delete Item Confirmation Modal -->
+    <div id="delete-item-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Confirm Deletion</h3>
+            <p class="modal-subtitle" id="delete-item-confirmation-text">Are you sure you want to delete this item?</p>
+            
+            <!-- Apply to all days toggle -->
+            <div class="modal-toggle-container" style="margin-top: 20px; margin-bottom: 10px;">
+                <div class="toggle-card-text">
+                    <span class="toggle-card-title">Apply to all days</span>
+                    <span class="toggle-card-subtitle">Delete this item everywhere.</span>
+                </div>
+                <label class="control-item">
+                    <input type="checkbox" id="delete-for-all-days-toggle">
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="modal-btn-group">
+                <button id="modal-cancel-delete-button" class="modal-btn secondary">Cancel</button>
+                <button id="modal-confirm-delete-button" class="modal-btn danger">Delete</button>
+            </div>
+        </div>
+    </div>
 
     <script src="messOwnerDashboard.js"></script>
 </body>
