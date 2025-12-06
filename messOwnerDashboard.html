@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="custom.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="messOwnerDashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="messOwnerStyle.css?v=2">
     <!-- Firebase 8.10.1 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -30,6 +34,22 @@
       const auth = firebase.auth(); // Added Firebase Auth
     </script>
     <style>
+        /* --- Global UI Enhancement --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #343a40;
+        }
+
+        .dashboard-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            margin: 40px 0 20px 0;
+        }
         /* Styles for the new 3-dot menu */
         .options-menu-container {
             position: fixed;
@@ -88,6 +108,224 @@
         .dropdown-item:hover { background-color: #f5f5f5; }
         .dropdown-item i { color: #e74c3c; } /* Red color for logout icon */
         #view-live-menu-btn i, #edit-mess-details-btn i { color: #3498db; } /* Blue for view/edit */
+
+        /* Styles for the 'Add to all days' toggle in the modal */
+        .modal-toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            gap: 15px; /* Add a gap for spacing */
+        }
+        .modal-toggle-container .toggle-card-text {
+        }
+        .modal-toggle-container .toggle-card-text .toggle-card-title {
+            font-weight: 600;
+            color: #343a40;
+            /* display: block; */ /* Removed to allow inline flow */
+        }
+        .modal-toggle-container .toggle-card-text .toggle-card-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+            /* display: block; */ /* Removed to allow inline flow */
+            margin-left: 8px; /* Add space between title and subtitle */
+        }
+        /* Re-using toggle-switch styles from messOwnerDashboard.css */
+        .modal-toggle-container .control-item {
+            margin: 0; /* Reset margin for flex alignment */
+        }
+
+
+        /* Styles for modal tabs */
+        .modal-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+        .modal-tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 15px;
+            font-weight: 500;
+            color: #888;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .modal-tab-btn.active {
+            color: #3498db;
+        }
+        .modal-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3498db;
+        }
+        .modal-tab-content { display: none; }
+        .modal-tab-content.active { display: block; }
+
+        /* Styles for the edit item modal form */
+        .edit-item-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .edit-item-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .edit-item-form label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+        }
+        .edit-item-form input[type="text"],
+        .edit-item-form input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .edit-item-form input[type="text"]:focus,
+        .edit-item-form input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+
+        /* --- Modern Suggestion UI in Modal --- */
+        .suggestion-search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .suggestion-search-container .fa-search {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+        #suggestion-search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px; /* Left padding for icon */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #suggestion-search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+        .suggestions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 200px; /* Limit height and make scrollable */
+        }
+        .suggestion-item {
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .suggestion-item.selected {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Styles for the new status control card */
+        .status-control-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-control-card .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .status-control-card .card-subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        .status-toggle-container .control-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+        .status-toggle-container .toggle-switch {
+            width: 80px; /* Wider for text */
+            height: 30px;
+            background-color: #e74c3c; /* Red for 'Closed' */
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .status-toggle-container .toggle-switch::before {
+            content: 'Closed';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-toggle-container input:checked + .toggle-switch {
+            background-color: #2ecc71; /* Green for 'Open' */
+        }
+        .status-toggle-container input:checked + .toggle-switch::before {
+            content: 'Open';
+            left: 15px;
+            right: auto;
+        }
+
+        /* Enhanced Day Tabs */
+        .day-tabs {
+            margin-bottom: 25px;
+        }
+        .day-tab {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .day-tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+            transform: translateY(-2px);
+        }
+        .day-tab.today {
+            font-weight: 700;
+        }
+        .day-tab.today::after {
+            content: '•';
+            color: #3498db;
+            margin-left: 4px;
+            font-size: 1.2em;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
@@ -125,14 +363,20 @@
             </div>
         </div>
 
-        <div class="controls-bar">
-            <label class="control-item edit-mode-item">
-                <span class="control-label">Mess Status:</span>
-                <input type="checkbox" id="mess-status-toggle" checked>
-                <div class="toggle-switch"></div>
-            </label>
-            <button id="save-button" class="save-btn edit-mode-item">Save</button>
+        <div class="status-control-card">
+            <div>
+                <h3 class="card-title">Mess Status</h3>
+                <p class="card-subtitle">Toggle to set your mess as open or closed for customers.</p>
+            </div>
+            <div class="status-toggle-container">
+                <label class="control-item">
+                    <input type="checkbox" id="mess-status-toggle" checked>
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
         </div>
+
+        <div class="controls-bar" style="display: none;"></div>
 
         <div class="section-title">Weekly Menu</div>
         <div class="day-tabs"></div>
@@ -143,17 +387,64 @@
         <div class="modal-content">
             <button class="modal-close">&times;</button>
             <h3>Add Menu Item</h3>
-            <p class="modal-subtitle">Select items from the suggestions below or add a custom one.</p>
-            <div id="modal-suggestions" class="suggestions-container"></div>
-            <button id="modal-add-selected-button" class="modal-btn">Add Selected Items</button>
-            <div class="custom-item-form">
-                <h4>Add a Custom Item</h4>
-                <input type="text" id="modal-custom-item-input" placeholder="Custom item name">
-                <input type="number" id="modal-custom-price-input" placeholder="Price (optional)">
-                <button id="modal-add-custom-button" class="modal-btn secondary">Add Custom Item</button>
+
+            <!-- Tab Navigation -->
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" data-tab="suggestions">Suggestions</button>
+                <button class="modal-tab-btn" data-tab="custom">Custom</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="modal-tab-content active" id="tab-suggestions">
+                <div class="suggestion-search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="suggestion-search-input" placeholder="Search for a food item...">
+                </div>
+                <div id="modal-suggestions" class="suggestions-container"></div>
+                <button id="modal-add-selected-button" class="modal-btn">Add Selected Items</button>
+            </div>
+
+            <div class="modal-tab-content" id="tab-custom">
+                <div class="custom-item-form">
+                    <input type="text" id="modal-custom-item-input" placeholder="Custom item name">
+                    <input type="number" id="modal-custom-price-input" placeholder="Price (optional)">
+                    <button id="modal-add-custom-button" class="modal-btn secondary">Add Custom Item</button>
+                </div>
+            </div>
+            
+            <div class="modal-toggle-container">
+                <div class="toggle-card-text">
+                    <span class="toggle-card-title">Add to all days</span>
+                    <span class="toggle-card-subtitle">Apply to this meal every day.</span>
+                </div>
+                <label class="control-item">
+                    <input type="checkbox" id="add-to-all-days-toggle">
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div id="edit-item-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Edit Menu Item</h3>
+            <div class="edit-item-form">
+                <div class="form-group">
+                    <label for="modal-edit-item-name">Item Name</label>
+                    <input type="text" id="modal-edit-item-name" placeholder="Enter item name">
+                </div>
+                <div class="form-group">
+                    <label for="modal-edit-item-price">Price (optional)</label>
+                    <input type="number" id="modal-edit-item-price" placeholder="e.g., 55">
+                </div>
+                <button id="modal-save-changes-button" class="modal-btn">Save Changes</button>
             </div>
         </div>
     </div>
+
 
     <script src="messOwnerDashboard.js"></script>
 </body>

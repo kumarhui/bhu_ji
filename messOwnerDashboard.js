@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const dayTabsContainer = document.querySelector('.day-tabs');
         const dayContentContainer = document.getElementById('day-content-container');
         const messStatusToggle = document.getElementById('mess-status-toggle');
-        const saveButton = document.getElementById('save-button');
         const menuToggleButton = document.getElementById('menu-toggle-button');
         const optionsDropdown = document.getElementById('options-dropdown');
         const logoutButton = document.getElementById('logout-button');
@@ -40,10 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         function saveData() {
-            saveButton.textContent = 'Saving...';
-            saveButton.classList.add('saving');
-            saveButton.disabled = true;
-
             // Data to save to the profile node
             const profileData = {
                 messStatus: messStatusToggle.checked,
@@ -82,19 +77,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
             Promise.all(savePromises)
                 .then(() => {
-                    saveButton.textContent = 'Saved!';
-                    saveButton.classList.remove('saving');
-                    setTimeout(() => {
-                        saveButton.textContent = 'Save';
-                        saveButton.disabled = false;
-                    }, 2000);
+                    console.log('Data saved successfully.');
                 })
                 .catch((error) => {
                     console.error("Firebase save failed: ", error);
-                    saveButton.textContent = 'Error!';
-                    saveButton.classList.remove('saving');
-                    saveButton.disabled = false;
+                    alert("Error saving data. Please check your connection and try again.");
                 });
+        }
+
+        // Helper to get the correct display name for a meal based on owner type
+        function getDisplayMealName(mealName) {
+            const lowerCaseMealName = mealName.toLowerCase();
+            if (ownerType === 'canteen') {
+                if (lowerCaseMealName === 'lunch') return 'Morning';
+                if (lowerCaseMealName === 'dinner') return 'Evening';
+            }
+            // Default for 'mess' or any other meal type
+            return mealName.charAt(0).toUpperCase() + mealName.slice(1);
         }
 
         function loadFoodSuggestions() {
@@ -188,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                                 sortedMealNames.forEach(mealName => {
                                     const meal = meals[mealName];
-                                    const capitalizedMealName = mealName.charAt(0).toUpperCase() + mealName.slice(1);
+                                    const capitalizedMealName = getDisplayMealName(mealName);
                                     createMealTab(dayContent, capitalizedMealName, meal.price, isFirstMeal);
                                     isFirstMeal = false;
                                     const mealContent = dayContent.querySelector('.meal-content:last-of-type');
@@ -217,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
              days.forEach((day, index) => {
                 const dayContent = dayContentContainer.querySelector(`.day-content[data-day-index="${index}"]`);
                 if(dayContent && !dayContent.querySelector('.meal-content')) {
-                    createMealTab(dayContent, 'Lunch', '55', true);
-                    createMealTab(dayContent, 'Dinner', '55');
+                    createMealTab(dayContent, getDisplayMealName('Lunch'), '55', true);
+                    createMealTab(dayContent, getDisplayMealName('Dinner'), '55');
                 }
             });
         }
@@ -304,7 +303,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        saveButton.addEventListener('click', saveData);
         messStatusToggle.addEventListener('change', saveMessStatus);
 
         days.forEach((day, index) => {
@@ -404,6 +402,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const modalAddCustomButton = document.getElementById('modal-add-custom-button');
         const modalCustomItemInput = document.getElementById('modal-custom-item-input');
         const modalCustomPriceInput = document.getElementById('modal-custom-price-input');
+        const suggestionSearchInput = document.getElementById('suggestion-search-input');
+        const addToAllDaysToggle = document.getElementById('add-to-all-days-toggle');
+        const modalTabs = document.querySelector('.modal-tabs');
+        const modalTabButtons = document.querySelectorAll('.modal-tab-btn');
+        const modalTabContents = document.querySelectorAll('.modal-tab-content');
+
+        // --- Edit Item Modal Elements ---
+        const editItemModal = document.getElementById('edit-item-modal');
+        const editModalClose = editItemModal.querySelector('.modal-close');
+        const editModalNameInput = document.getElementById('modal-edit-item-name');
+        const editModalPriceInput = document.getElementById('modal-edit-item-price');
+        const editModalSaveButton = document.getElementById('modal-save-changes-button');
+        let currentItemToEdit = null;
+
 
         const modalClose = document.querySelector('.modal-close');
         let currentMenuList = null;
@@ -420,6 +432,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalCustomItemInput.value = '';
                 modalCustomPriceInput.value = '';
                 modalSuggestions.innerHTML = '';
+                suggestionSearchInput.value = '';
+                addToAllDaysToggle.checked = false; // Reset toggle on close
+                // Reset tabs to default
+                modalTabButtons.forEach(btn => btn.classList.remove('active'));
+                modalTabContents.forEach(content => content.classList.remove('active'));
+                document.querySelector('.modal-tab-btn[data-tab="suggestions"]').classList.add('active');
+                document.getElementById('tab-suggestions').classList.add('active');
                 populateSuggestions(foodSuggestions); // Reset for next time
             }, 300);
             currentMenuList = null;
@@ -427,6 +446,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalClose.addEventListener('click', hideAddItemModal);
         addItemModal.addEventListener('click', e => { if (e.target === addItemModal) hideAddItemModal(); });
+
+        // --- Edit Item Modal Logic ---
+        function showEditItemModal(itemEl) {
+            currentItemToEdit = itemEl;
+            editModalNameInput.value = itemEl.dataset.name;
+            editModalPriceInput.value = itemEl.dataset.price;
+            editItemModal.classList.add('active');
+            editModalNameInput.focus();
+        }
+
+        function hideEditItemModal() {
+            editItemModal.classList.remove('active');
+            currentItemToEdit = null;
+        }
+
+        editModalClose.addEventListener('click', hideEditItemModal);
+        editItemModal.addEventListener('click', e => { if (e.target === editItemModal) hideEditItemModal(); });
+
+        editModalSaveButton.addEventListener('click', () => {
+            if (currentItemToEdit) {
+                currentItemToEdit.dataset.name = editModalNameInput.value.trim();
+                currentItemToEdit.dataset.price = editModalPriceInput.value.trim();
+                updateMenuItemDisplay(currentItemToEdit);
+                hideEditItemModal();
+                debouncedSave();
+            }
+        });
+        // --- Modal Tab Logic ---
+        if (modalTabs) {
+            modalTabs.addEventListener('click', e => {
+                if (e.target.matches('.modal-tab-btn')) {
+                    const tabId = e.target.dataset.tab;
+                    modalTabButtons.forEach(btn => btn.classList.remove('active'));
+                    modalTabContents.forEach(content => content.classList.remove('active'));
+
+                    e.target.classList.add('active');
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                }
+            });
+        }
 
         function populateSuggestions(suggestions) {
             modalSuggestions.innerHTML = '';
@@ -442,8 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        modalCustomItemInput.addEventListener('input', () => {
-            const query = modalCustomItemInput.value.toLowerCase().trim();
+        suggestionSearchInput.addEventListener('input', () => {
+            const query = suggestionSearchInput.value.toLowerCase().trim();
             const filteredSuggestions = foodSuggestions.filter(item => 
                 item.toLowerCase().includes(query)
             );
@@ -452,12 +511,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalAddSelectedButton.addEventListener('click', () => {
             const selectedItems = modalSuggestions.querySelectorAll('.suggestion-item.selected');
-            if (selectedItems.length > 0 && currentMenuList) {
-                selectedItems.forEach(itemEl => {
-                    addMenuItem(currentMenuList, itemEl.dataset.name, ''); // Add without price
-                });
-                hideAddItemModal();
-                debouncedSave();
+            if (selectedItems.length === 0) {
+                alert('Please select at least one item to add.');
+                return;
+            }
+            if (currentMenuList) {
+                const addAll = addToAllDaysToggle.checked;
+                const sourceMealContent = currentMenuList.closest('.meal-content');
+                const mealName = sourceMealContent.dataset.name;
+
+                if (addAll) {
+                    // Find the same meal across all days
+                    document.querySelectorAll(`.meal-content[data-name="${mealName}"]`).forEach(mealContent => {
+                        const list = mealContent.querySelector('.menu-items-list');
+                        selectedItems.forEach(itemEl => addMenuItem(list, itemEl.dataset.name, ''));
+                    });
+                } else {
+                    // Add only to the current list
+                    selectedItems.forEach(itemEl => {
+                        addMenuItem(currentMenuList, itemEl.dataset.name, '');
+                    });
+                }
+                 hideAddItemModal();
+                 debouncedSave();
             } else {
                 alert('Please select at least one item to add.');
             }
@@ -465,11 +541,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         modalAddCustomButton.addEventListener('click', () => {
             const itemName = modalCustomItemInput.value.trim();
-            if (itemName && currentMenuList) {
-                const itemPrice = modalCustomPriceInput.value.trim();
-                addMenuItem(currentMenuList, itemName, itemPrice); // Add the single custom item
-                hideAddItemModal();
-                debouncedSave();
+            const itemPrice = modalCustomPriceInput.value.trim();
+
+            if (!itemName) {
+                alert('Please enter a custom item name.');
+                return;
+            }
+
+            if (currentMenuList) {
+                const addAll = addToAllDaysToggle.checked;
+                const sourceMealContent = currentMenuList.closest('.meal-content');
+                const mealName = sourceMealContent.dataset.name;
+
+                if (addAll) {
+                    document.querySelectorAll(`.meal-content[data-name="${mealName}"]`).forEach(mealContent => {
+                        const list = mealContent.querySelector('.menu-items-list');
+                        addMenuItem(list, itemName, itemPrice);
+                    });
+                } else {
+                    addMenuItem(currentMenuList, itemName, itemPrice);
+                }
+                 hideAddItemModal();
+                 debouncedSave();
             }
         });
 
@@ -497,18 +590,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     debouncedSave();
                 }
             } else if (e.target.closest('.edit-item')) {
-                const itemEl = e.target.closest('.menu-item');
-                const oldName = itemEl.dataset.name;
-                const oldPrice = itemEl.dataset.price;
-
-                const newName = prompt("Enter new item name:", oldName);
-                if (newName && newName.trim() !== '') {
-                    const newPrice = prompt("Enter new price (optional):", oldPrice);
-                    itemEl.dataset.name = newName.trim();
-                    itemEl.dataset.price = newPrice ? newPrice.trim() : '';
-                    updateMenuItemDisplay(itemEl);
-                    debouncedSave();
-                }
+                showEditItemModal(e.target.closest('.menu-item'));
             }
         });
         
