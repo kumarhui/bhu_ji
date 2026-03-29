@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Student Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#F1F5F9] text-[#1E293B]">
+    <div class="flex min-h-screen">
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-r p-6 sticky top-0 h-screen overflow-y-auto">
+            <h1 class="font-bold text-2xl text-[#6366F1] mb-10">StudentHub</h1>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 bg-[#6366F1]/10 text-[#6366F1] rounded-xl font-bold">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </a>
+                <a href="mess.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="utensils" class="w-5 h-5"></i> Mess Portal
+                </a>
+                <a href="marketplace.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i> Marketplace
+                </a>
+                <a href="study-resources.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Study Resources
+                </a>
+                <a href="schedule.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="calendar" class="w-5 h-5"></i> Schedule
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="user" class="w-5 h-5"></i> Profile
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 pb-24 md:pb-10">
+            <header class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-extrabold tracking-tight">Dashboard</h2>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="font-bold text-sm">Felix Student</p>
+                        <p class="text-xs text-slate-500">B.Tech CS • Year 3</p>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold border-2 border-white shadow-sm">FS</div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Welcome Card -->
+                <div class="md:col-span-2 bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-3xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold mb-2 text-white">Welcome Back!</h3>
+                        <p class="text-indigo-100 mb-6">You have 3 lectures today. Check out the new Study Resources for your upcoming exams.</p>
+                        <a href="study-resources.html" class="inline-block bg-white text-[#6366F1] px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-50 transition-all">Explore Resources</a>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+                </div>
+
+                <!-- Stats Card -->
+                <div class="bg-white rounded-3xl p-6 border shadow-sm flex flex-col justify-center">
+                    <h4 class="font-bold text-slate-800 flex items-center gap-2 mb-4">
+                        <i data-lucide="clock" class="text-orange-500 w-5 h-5"></i> Next Class
+                    </h4>
+                    <p class="text-lg font-bold">Computer Networks</p>
+                    <p class="text-sm text-slate-500 mb-4">Starts in 15 minutes • Room 302</p>
+                    <a href="schedule.html" class="text-[#6366F1] text-sm font-bold hover:underline">Full Schedule →</a>
+                </div>
+            </div>
+
+            <!-- Quick Access Grid -->
+            <section class="mt-10">
+                <h3 class="text-xl font-bold mb-6">Quick Access</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="marketplace.html" class="bg-white p-6 rounded-3xl border hover:border-[#6366F1]/50 hover:shadow-md transition-all group">
+                        <div class="w-12 h-12 bg-pink-50 text-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i data-lucide="shopping-bag"></i></div>
+                        <span class="font-bold text-sm">Marketplace</span>
+                    </a>
+                    <a href="study-resources.html" class="bg-white p-6 rounded-3xl border hover:border-[#6366F1]/50 hover:shadow-md transition-all group">
+                        <div class="w-12 h-12 bg-indigo-50 text-[#6366F1] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i data-lucide="book-open"></i></div>
+                        <span class="font-bold text-sm">Study Material</span>
+                    </a>
+                    <a href="mess.html" class="bg-white p-6 rounded-3xl border hover:border-[#6366F1]/50 hover:shadow-md transition-all group">
+                        <div class="w-12 h-12 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i data-lucide="utensils"></i></div>
+                        <span class="font-bold text-sm">Mess Menu</span>
+                    </a>
+                    <a href="schedule.html" class="bg-white p-6 rounded-3xl border hover:border-[#6366F1]/50 hover:shadow-md transition-all group">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i data-lucide="calendar"></i></div>
+                        <span class="font-bold text-sm">Timetable</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-2 z-50 overflow-x-auto hide-scroll">
+        <a href="index.html" class="text-[#6366F1] flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">HOME</span>
+        </a>
+        <a href="mess.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="utensils" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">MESS</span>
+        </a>
+        <a href="marketplace.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">SHOP</span>
+        </a>
+        <a href="study-resources.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">STUDY</span>
+        </a>
+        <a href="schedule.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">CLASS</span>
+        </a>
+        <a href="profile.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">ME</span>
+        </a>
+    </nav>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>

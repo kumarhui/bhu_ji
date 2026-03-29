@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post an Item</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="sell-page">
+    <div class="page-backdrop" aria-hidden="true"></div>
+
+    <header class="app-header">
+        <a href="index1.html" class="header-link">Back to Market</a>
+        <a href="index1.html" class="brand-mark">
+            <span class="brand-badge">CM</span>
+            <span>
+                <span class="eyebrow">Seller dashboard</span>
+                <strong>List Your Item</strong>
+            </span>
+        </a>
+    </header>
+
+    <main class="page-shell sell-shell">
+        <section class="sell-hero">
+            <p class="eyebrow">Quick Listing</p>
+            <h1>Turn unused items into cash by tonight.</h1>
+            <p class="section-copy">A sharp photo, fair price, and clear contact number usually make the difference. We kept the form simple so you can publish fast.</p>
+
+            <div class="seller-tips">
+                <article class="tip-card">
+                    <h2>What sells faster</h2>
+                    <p>Use a bright image, mention the condition, and price close to market expectations.</p>
+                </article>
+                <article class="tip-card">
+                    <h2>Keep it trustworthy</h2>
+                    <p>Share a reachable phone number and write a short description if there are any defects.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <div class="form-copy">
+                <p class="eyebrow">Create listing</p>
+                <h2>Post in under a minute</h2>
+                <p class="section-copy">Complete the essentials below and your item will appear in the marketplace feed.</p>
+            </div>
+
+            <div id="form-message" class="form-message" aria-live="polite"></div>
+
+            <form id="sell-form" novalidate>
+                <div class="input-group">
+                    <label for="imageInput">Upload Photos</label>
+                    <label class="upload-dropzone" for="imageInput">
+                        <span class="upload-icon">+</span>
+                        <span class="upload-copy">Drop up to 3 clear photos</span>
+                        <span class="upload-hint">JPG, PNG or WebP · max 3 files</span>
+                    </label>
+                    <input type="file" id="imageInput" accept="image/*" multiple required>
+                    <p id="image-error" class="field-error"></p>
+                    <div id="image-preview-wrap" class="image-preview-wrap" hidden>
+                        <div id="image-preview-grid" class="image-preview-grid" aria-live="polite"></div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="title">Item Name</label>
+                        <input type="text" id="title" placeholder="e.g. Psychology Textbook" maxlength="70" required>
+                        <p id="title-error" class="field-error"></p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Clothes">Clothes</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <p id="category-error" class="field-error"></p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label for="price">Price</label>
+                        <div class="input-with-prefix">
+                            <span class="input-prefix">&#8377;</span>
+                            <input type="number" id="price" placeholder="0.00" min="0" max="999999" step="0.01" required>
+                        </div>
+                        <p id="price-error" class="field-error"></p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="Contact number for buyers" pattern="[0-9]{10,12}" maxlength="12" required>
+                        <p id="phone-error" class="field-error"></p>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="desc">Description (Optional)</label>
+                    <textarea id="desc" rows="4" maxlength="220" placeholder="Condition, age, accessories included, or pickup details"></textarea>
+                </div>
+
+                <div id="progress-container" class="progress-container" hidden>
+                    <div class="progress-track">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div class="progress-meta">
+                        <span>Uploading image</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="submit-btn">
+                    <span class="btn-spinner" aria-hidden="true"></span>
+                    <span class="btn-label">Post Item</span>
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <div id="success-dialog" class="success-dialog" hidden>
+        <div class="success-card">
+            <p class="eyebrow">Success</p>
+            <h2>Your listing is live</h2>
+            <p class="section-copy">Save this code to delete or edit your item later.</p>
+            <div class="success-code" id="success-code">000000</div>
+            <button type="button" id="success-close" class="secondary-action">Return to marketplace</button>
+        </div>
+    </div>
+
+    <script type="module" src="src/modules/upload.js"></script>
+</body>
+</html>

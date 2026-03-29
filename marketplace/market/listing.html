@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listing Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="listing-page">
+    <div class="page-backdrop" aria-hidden="true"></div>
+
+    <header class="app-header">
+        <a href="index1.html" class="brand-mark">
+            <span class="brand-badge">CM</span>
+            <span>
+                <span class="eyebrow">Listing</span>
+                <strong>Product Details</strong>
+            </span>
+        </a>
+        <div class="header-actions">
+            <a href="sell.html" class="secondary-action">Post an item</a>
+        </div>
+    </header>
+
+    <main class="listing-shell">
+        <section class="listing-gallery" id="gallery">
+            <div class="listing-placeholder" id="galleryPlaceholder">Loading images…</div>
+        </section>
+        <section class="listing-details">
+            <div class="status-bar" id="statusBadge"></div>
+            <h1 id="listingTitle">Listing Title</h1>
+            <p class="listing-price" id="listingPrice"></p>
+            <p class="listing-date" id="listingDate"></p>
+            <p class="listing-desc" id="listingDesc"></p>
+            <div class="listing-meta">
+                <span id="listingCategory">Category</span>
+                <span id="listingContact">Contact</span>
+            </div>
+            <div class="listing-actions" id="listingActions"></div>
+            <div id="listingError" class="listing-error" hidden></div>
+        </section>
+    </main>
+
+    <script type="module" src="src/modules/listing.js"></script>
+</body>
+</html>

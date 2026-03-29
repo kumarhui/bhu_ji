@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="market-home">
+    <div class="page-backdrop" aria-hidden="true"></div>
+
+    <header class="app-header">
+        <a href="index1.html" class="brand-mark">
+            <span class="brand-badge">CM</span>
+            <span>
+                <span class="eyebrow">Student resale</span>
+                <strong>Campus Market</strong>
+            </span>
+        </a>
+        <button type="button" class="lang-toggle" id="langToggle" aria-label="Toggle language">
+            <span class="lang-icon" aria-hidden="true">🌐</span>
+            <span data-i18n="langToggle">हिंदी</span>
+        </button>
+    </header>
+
+    <main class="page-shell">
+
+        <section class="browse-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow" data-i18n="categoryHeading">Browse by category</p>
+                    <h2 data-i18n="categoryTitle">Fresh picks from the community</h2>
+                </div>
+                <p class="section-copy" data-i18n="categoryHint">Tap a category to filter the live feed.</p>
+            </div>
+
+            <section class="category-wrapper" id="category-menu" aria-label="Categories">
+                <button class="cat-chip active" data-category="All">All</button>
+                <button class="cat-chip" data-category="Electronics">Electronics</button>
+                <button class="cat-chip" data-category="Books">Books</button>
+                <button class="cat-chip" data-category="Furniture">Furniture</button>
+                <button class="cat-chip" data-category="Clothes">Clothes</button>
+                <button class="cat-chip" data-category="Others">Others</button>
+            </section>
+        </section>
+
+        <section class="feed-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow" data-i18n="feedHeading">Live marketplace</p>
+                    <h2 data-i18n="feedTitle">Available now</h2>
+                </div>
+            </div>
+            <section id="item-feed" class="feed-container" aria-live="polite"></section>
+        </section>
+    </main>
+
+    <a href="sell.html" class="fab">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <span class="fab-label" data-i18n="fabText">Sell Something</span>
+    </a>
+
+    <script type="module" src="src/modules/feed.js"></script>
+    <script>
+        (function () {
+            const translations = {
+                langToggle: { en: 'हिंदी', hi: 'English' },
+                categoryHeading: { en: 'Browse by category', hi: 'श्रेणी द्वारा ब्राउज़ करें' },
+                categoryTitle: { en: 'Fresh picks from the community', hi: 'समुदाय से नई सूची' },
+                categoryHint: { en: 'Tap a category to filter the live feed.', hi: 'लाइव फ़ीड को फ़िल्टर करने के लिए एक श्रेणी चुनें।' },
+                feedHeading: { en: 'Live marketplace', hi: 'लाइव मार्केटप्लेस' },
+                feedTitle: { en: 'Available now', hi: 'अभी उपलब्ध है' },
+                fabText: { en: 'Sell Something', hi: 'कुछ बेचें' }
+            };
+            const body = document.body;
+            const toggle = document.getElementById('langToggle');
+            const i18nNodes = document.querySelectorAll('[data-i18n]');
+            const applyLanguage = (lang) => {
+                body.dataset.lang = lang;
+                i18nNodes.forEach((node) => {
+                    const key = node.getAttribute('data-i18n');
+                    const value = translations[key]?.[lang];
+                    if (value) node.textContent = value;
+                });
+            };
+            toggle.addEventListener('click', () => {
+                const nextLang = body.dataset.lang === 'hi' ? 'en' : 'hi';
+                applyLanguage(nextLang);
+            });
+            applyLanguage('en');
+        })();
+    </script>
+</body>
+</html>

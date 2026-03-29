@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Resources | Student Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .loading-bar {
+            height: 3px;
+            background: #6366F1;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Glassmorphism for the Cookie Warning Fallback */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B]">
+    <div class="flex min-h-screen">
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-r p-6 sticky top-0 h-screen overflow-y-auto">
+            <h1 class="font-bold text-2xl text-[#6366F1] mb-10">StudentHub</h1>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </a>
+                <a href="mess.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="utensils" class="w-5 h-5"></i> Mess Portal
+                </a>
+                <a href="marketplace.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i> Marketplace
+                </a>
+                <a href="study-resources.html" class="flex items-center gap-3 px-4 py-3 bg-[#6366F1]/10 text-[#6366F1] rounded-xl font-bold">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Study Resources
+                </a>
+                <a href="schedule.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="calendar" class="w-5 h-5"></i> Schedule
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="user" class="w-5 h-5"></i> Profile
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 relative">
+            
+            <!-- VIEW 1: DASHBOARD -->
+            <div id="view-dashboard" class="p-6 md:p-10 space-y-6 slide-in">
+                <header class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-black tracking-tight">Academic Resources</h2>
+                        <p class="text-slate-500 text-sm">Curated tools for your academic success</p>
+                    </div>
+                    <button onclick="showOfflineLibrary()" class="p-3 bg-white border rounded-2xl text-[#6366F1] hover:shadow-md transition-all relative">
+                        <i data-lucide="cloud-done"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
+                    </button>
+                </header>
+
+                <div class="space-y-4 max-w-2xl">
+                    <div onclick="openExplorer('Study Notes')" class="bg-white p-5 rounded-[24px] border shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
+                        <div class="w-14 h-14 bg-[#6366F1]/10 rounded-[16px] flex items-center justify-center text-[#6366F1]"><i data-lucide="description"></i></div>
+                        <div class="flex-1"><h4 class="font-black text-lg">Study Notes</h4><p class="text-xs text-slate-400 font-medium">Curated handwritten & digital notes</p></div>
+                        <i data-lucide="chevron-right" class="text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+
+                    <div onclick="openExplorer('Question Bank')" class="bg-white p-5 rounded-[24px] border shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
+                        <div class="w-14 h-14 bg-[#10B981]/10 rounded-[16px] flex items-center justify-center text-[#10B981]"><i data-lucide="history"></i></div>
+                        <div class="flex-1"><h4 class="font-black text-lg">Question Bank</h4><p class="text-xs text-slate-400 font-medium">Previous year papers & samples</p></div>
+                        <i data-lucide="chevron-right" class="text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+
+                    <!-- Syllabus Card -->
+                    <div onclick="openWebView('Syllabus', 'https://zodax.gamer.gd/BHU_JI_NEO/index.html?i=1')" 
+                         class="bg-white p-5 rounded-[24px] border shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center gap-4 group">
+                        <div class="w-14 h-14 bg-[#F59E0B]/10 rounded-[16px] flex items-center justify-center text-[#F59E0B]"><i data-lucide="list-checks"></i></div>
+                        <div class="flex-1"><h4 class="font-black text-lg">Syllabus</h4><p class="text-xs text-slate-400 font-medium">Official university course structures</p></div>
+                        <i data-lucide="chevron-right" class="text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: EXPLORER -->
+            <div id="view-explorer" class="hidden min-h-screen bg-white md:bg-[#F8FAFC] slide-in">
+                <nav class="bg-white border-b px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+                    <div class="flex items-center gap-4">
+                        <button onclick="showDashboard()" class="p-2 hover:bg-slate-100 rounded-full transition-all"><i data-lucide="arrow-left"></i></button>
+                        <h2 id="explorerTitle" class="font-black text-lg">Folder Name</h2>
+                    </div>
+                </nav>
+                <div id="explorerList" class="p-6 space-y-3 max-w-3xl mx-auto"></div>
+            </div>
+
+            <!-- VIEW 3: WEB VIEWER (Improved for Cookie Support) -->
+            <div id="view-web" class="hidden fixed inset-0 z-[100] bg-white flex flex-col slide-in">
+                <div class="bg-white border-b px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <button onclick="showDashboard()" class="p-2 hover:bg-slate-100 rounded-full transition-all"><i data-lucide="arrow-left"></i></button>
+                        <h2 id="webTitle" class="font-black text-base uppercase tracking-tight">Viewer</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- New Tab Fallback Button -->
+                        <button id="externalLink" class="p-2 text-[#6366F1] hover:bg-[#6366F1]/10 rounded-full transition-all" title="Open in New Tab">
+                            <i data-lucide="external-link"></i>
+                        </button>
+                        <button onclick="reloadWeb()" class="p-2 text-slate-400 hover:text-slate-600"><i data-lucide="rotate-cw"></i></button>
+                    </div>
+                </div>
+                <div class="loading-bar" id="webLoadingBar"></div>
+                
+                <div class="flex-1 relative bg-[#F1F5F9]">
+                    <iframe id="webFrame" class="w-full h-full border-none" src="" allow="clipboard-read; clipboard-write" sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"></iframe>
+                    
+                    <!-- Cookie/Iframe Warning Overlay -->
+                    <div id="iframeWarning" class="hidden absolute inset-0 flex items-center justify-center p-6 bg-slate-900/10 backdrop-blur-sm">
+                        <div class="glass-panel max-w-sm w-full p-8 rounded-[32px] text-center shadow-2xl">
+                            <div class="w-16 h-16 bg-blue-100 text-[#6366F1] rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i data-lucide="cookie" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="font-black text-xl mb-3">Cookie Restriction</h3>
+                            <p class="text-slate-500 text-sm mb-8 leading-relaxed">
+                                Modern browsers block cookies in embedded views. If the content doesn't load, please open it in a new tab.
+                            </p>
+                            <button id="externalBtn" class="w-full bg-[#6366F1] text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-[#4F46E5] transition-all">
+                                Open in New Tab
+                            </button>
+                            <button onclick="hideWarning()" class="mt-4 text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest">
+                                Try embedded view anyway
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: OFFLINE LIBRARY -->
+            <div id="view-offline" class="hidden min-h-screen bg-[#F8FAFC] slide-in">
+                <nav class="bg-white border-b px-6 py-4 flex items-center justify-center sticky top-0 z-50">
+                    <button onclick="showDashboard()" class="absolute left-6 p-2 hover:bg-slate-100 rounded-full transition-all"><i data-lucide="arrow-left"></i></button>
+                    <h2 class="font-black text-lg">Offline Library</h2>
+                </nav>
+                <div id="offlineList" class="p-6 space-y-4 max-w-2xl mx-auto"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-2 z-50 overflow-x-auto hide-scroll">
+        <a href="index.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">HOME</span>
+        </a>
+        <a href="mess.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="utensils" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">MESS</span>
+        </a>
+        <a href="marketplace.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">SHOP</span>
+        </a>
+        <a href="study-resources.html" class="text-[#6366F1] flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">STUDY</span>
+        </a>
+        <a href="schedule.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">CLASS</span>
+        </a>
+        <a href="profile.html" class="text-slate-400 flex flex-col items-center min-w-[64px] py-1">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span class="text-[9px] font-bold mt-1 uppercase">ME</span>
+        </a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+        const views = ['view-dashboard', 'view-explorer', 'view-web', 'view-offline'];
+
+        function switchView(target) {
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(target).classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function showDashboard() { 
+            document.getElementById('webFrame').src = ""; // Clear iframe to stop processes
+            switchView('view-dashboard'); 
+        }
+
+        function openWebView(title, url) {
+            document.getElementById('webTitle').innerText = title;
+            const bar = document.getElementById('webLoadingBar');
+            const frame = document.getElementById('webFrame');
+            const warning = document.getElementById('iframeWarning');
+            const extLink = document.getElementById('externalLink');
+            const extBtn = document.getElementById('externalBtn');
+            
+            // Set External Click Actions
+            const openExt = () => window.open(url, '_blank');
+            extLink.onclick = openExt;
+            extBtn.onclick = openExt;
+
+            bar.style.width = '0%';
+            warning.classList.remove('hidden'); // Show advice overlay by default
+            switchView('view-web');
+
+            setTimeout(() => bar.style.width = '30%', 100);
+            setTimeout(() => bar.style.width = '70%', 500);
+            
+            frame.src = url;
+            frame.onload = () => {
+                bar.style.width = '100%';
+                setTimeout(() => {
+                    bar.style.width = '0%';
+                    // Auto-hide warning after 3 seconds if iframe seems to be loading something
+                    setTimeout(() => warning.classList.add('hidden'), 2000);
+                }, 400);
+            };
+        }
+
+        function hideWarning() { document.getElementById('iframeWarning').classList.add('hidden'); }
+        function reloadWeb() { openWebView(document.getElementById('webTitle').innerText, document.getElementById('webFrame').src); }
+        function showOfflineLibrary() { switchView('view-offline'); }
+        
+        function openExplorer(name) {
+            document.getElementById('explorerTitle').innerText = name;
+            switchView('view-explorer');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess & Canteen | Student Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#F1F5F9] text-[#1E293B]">
+    <div class="flex min-h-screen">
+        <!-- Sidebar (Desktop) -->
+        <aside class="hidden md:flex flex-col w-64 bg-white border-r p-6 sticky top-0 h-screen overflow-y-auto">
+            <h1 class="font-bold text-2xl text-[#6366F1] mb-10">StudentHub</h1>
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </a>
+                <a href="mess.html" class="flex items-center gap-3 px-4 py-3 bg-[#6366F1]/10 text-[#6366F1] rounded-xl font-bold">
+                    <i data-lucide="utensils" class="w-5 h-5"></i> Mess Portal
+                </a>
+                <a href="marketplace.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i> Marketplace
+                </a>
+                <a href="study-resources.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Study Resources
+                </a>
+                <a href="schedule.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="calendar" class="w-5 h-5"></i> Schedule
+                </a>
+                <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-xl transition-all">
+                    <i data-lucide="user" class="w-5 h-5"></i> Profile
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 relative pb-24 md:pb-10">
+            
+            <!-- BETA BANNER (From BhuMessScreen.kt) -->
+            <div class="bg-[#FEF3C7] px-6 py-2 flex items-center gap-2 text-[#92400E] text-[11px] font-bold">
+                <i data-lucide="construction" class="w-4 h-4 text-[#D97706]"></i>
+                BETA: Directory data is being updated. Some features may be limited.
+            </div>
+
+            <!-- DIRECTORY VIEW -->
+            <div id="view-directory" class="p-6 md:p-10 space-y-6">
+                <header>
+                    <h2 class="text-3xl font-extrabold tracking-tight">Mess & Canteen</h2>
+                    <p class="text-slate-500 text-sm">Find and explore campus food providers</p>
+                </header>
+
+                <!-- Search Bar -->
+                <div class="relative group">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-[#6366F1] w-5 h-5"></i>
+                    <input type="text" id="searchInput" placeholder="Search mess or canteen..." 
+                           class="w-full bg-white border-none rounded-2xl py-4 pl-12 pr-4 shadow-sm focus:ring-2 focus:ring-[#6366F1] transition-all outline-none">
+                </div>
+
+                <!-- Filters -->
+                <div class="flex gap-2 overflow-x-auto hide-scroll pb-2">
+                    <button onclick="filterCategory('All')" class="filter-chip active bg-[#6366F1] text-white px-6 py-2 rounded-full text-sm font-semibold whitespace-nowrap shadow-md">All</button>
+                    <button onclick="filterCategory('Mess')" class="filter-chip bg-white text-slate-500 px-6 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-slate-100 border border-transparent">Mess</button>
+                    <button onclick="filterCategory('Canteen')" class="filter-chip bg-white text-slate-500 px-6 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-slate-100 border border-transparent">Canteen</button>
+                </div>
+
+                <!-- List Results -->
+                <div id="messList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards will be injected here via JS -->
+                </div>
+            </div>
+
+            <!-- DETAIL VIEW (Initially Hidden) -->
+            <div id="view-detail" class="hidden min-h-screen bg-[#F1F5F9]">
+                <!-- Header (Brush Style) -->
+                <div class="h-40 bg-gradient-to-b from-[#1E293B] to-[#334155] p-6 flex flex-col justify-center items-center relative">
+                    <button onclick="showDirectory()" class="absolute left-4 top-4 p-2 text-white hover:bg-white/10 rounded-full">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <h2 id="detailName" class="text-2xl font-black text-white">Academic Mess</h2>
+                    <div class="mt-2 px-3 py-1 bg-white/15 rounded-full text-white text-[12px] font-medium" id="detailType">Hostel Mess Menu</div>
+                </div>
+
+                <!-- Day Selector -->
+                <div class="bg-white border-b sticky top-0 z-10">
+                    <div class="flex gap-2 overflow-x-auto hide-scroll px-6 py-3">
+                        <button onclick="selectDay(0)" class="day-chip bg-[#6366F1] text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">Sun</button>
+                        <button onclick="selectDay(1)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Mon</button>
+                        <button onclick="selectDay(2)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Tue</button>
+                        <button onclick="selectDay(3)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Wed</button>
+                        <button onclick="selectDay(4)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Thu</button>
+                        <button onclick="selectDay(5)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Fri</button>
+                        <button onclick="selectDay(6)" class="day-chip bg-white text-slate-500 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 border border-transparent">Sat</button>
+                    </div>
+                </div>
+
+                <!-- Menu Content -->
+                <div id="menuContainer" class="p-6 space-y-8 max-w-2xl mx-auto">
+                    <!-- Meals will be injected here -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-2 z-50 overflow-x-auto hide-scroll">
+        <a href="index.html" class="text-slate-400 flex flex-col items-center min-w-[60px]"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">HOME</span></a>
+        <a href="mess.html" class="text-[#6366F1] flex flex-col items-center min-w-[60px]"><i data-lucide="utensils" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">MESS</span></a>
+        <a href="marketplace.html" class="text-slate-400 flex flex-col items-center min-w-[60px]"><i data-lucide="shopping-bag" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">SHOP</span></a>
+        <a href="study-resources.html" class="text-slate-400 flex flex-col items-center min-w-[60px]"><i data-lucide="book-open" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">STUDY</span></a>
+        <a href="schedule.html" class="text-slate-400 flex flex-col items-center min-w-[60px]"><i data-lucide="calendar" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">CLASS</span></a>
+        <a href="profile.html" class="text-slate-400 flex flex-col items-center min-w-[60px]"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[9px] font-bold mt-1">ME</span></a>
+    </nav>
+
+    <script>
+        // --- DATA (Mocking Firebase Data) ---
+        const messData = [
+            { id: "1", name: "Ramanujan Hostel Mess", status: true, phone: "9876543210", type: "MESS", rating: "4.5" },
+            { id: "2", name: "Central Canteen", status: true, phone: "9876543211", type: "CANTEEN", rating: "4.2" },
+            { id: "3", name: "Visvesvaraya Mess", status: false, phone: "9876543212", type: "MESS", rating: "3.9" },
+            { id: "4", name: "Skyline Cafe", status: true, phone: "9876543213", type: "CANTEEN", rating: "4.8" },
+        ];
+
+        const mockMenu = {
+            breakfast: [{ id: "b1", name: "Masala Dosa & Sambar", price: "40", likes: 12 }, { id: "b2", name: "Bread Omelette", price: "35", likes: 8 }],
+            lunch: [{ id: "l1", name: "North Indian Thali", price: "60", likes: 45 }, { id: "l2", name: "Veg Pulao & Raita", price: "50", likes: 23 }],
+            dinner: [{ id: "d1", name: "Paneer Butter Masala & Naan", price: "70", likes: 89 }, { id: "d2", name: "Egg Curry & Rice", price: "55", likes: 31 }]
+        };
+
+        let currentCategory = 'All';
+        let currentSearch = '';
+
+        // --- DIRECTORY LOGIC ---
+        function renderDirectory() {
+            const list = document.getElementById('messList');
+            list.innerHTML = '';
+            
+            const filtered = messData.filter(item => {
+                const matchesCat = currentCategory === 'All' || item.type.toUpperCase() === currentCategory.toUpperCase();
+                const matchesSearch = item.name.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                const typeColor = item.type === 'MESS' ? '#3B82F6' : '#10B981';
+                const statusColor = item.status ? '#10B981' : '#EF4444';
+                const statusBg = item.status ? '#D1FAE5' : '#FEE2E2';
+                const statusText = item.status ? '#059669' : '#B91C1C';
+
+                card.innerHTML = `
+                    <div class="bg-white rounded-[24px] p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-[#6366F1]/20" onclick="showDetail('${item.id}')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background-color: ${typeColor}15">
+                                <i data-lucide="${item.type === 'MESS' ? 'restaurant' : 'storefront'}" style="color: ${typeColor}"></i>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <h4 class="font-extrabold text-[#1E293B] truncate">${item.name}</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="w-2 h-2 rounded-full" style="background-color: ${statusColor}"></span>
+                                    <span class="text-[12px] font-medium" style="color: ${statusText}">${item.status ? 'Open Now' : 'Closed'}</span>
+                                </div>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" style="background-color: ${typeColor}15; color: ${typeColor}">${item.type}</span>
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="star" class="w-3 h-3 text-[#F59E0B] fill-[#F59E0B]"></i>
+                                        <span class="text-xs font-bold">${item.rating}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${item.phone ? `
+                            <button onclick="event.stopPropagation(); window.location.href='tel:${item.phone}'" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-[#6366F1] hover:bg-[#6366F1] hover:text-white transition-all">
+                                <i data-lucide="phone" class="w-4 h-4"></i>
+                            </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-chip').forEach(btn => {
+                if(btn.innerText === cat) {
+                    btn.classList.add('active', 'bg-[#6366F1]', 'text-white', 'shadow-md');
+                    btn.classList.remove('bg-white', 'text-slate-500');
+                } else {
+                    btn.classList.remove('active', 'bg-[#6366F1]', 'text-white', 'shadow-md');
+                    btn.classList.add('bg-white', 'text-slate-500');
+                }
+            });
+            renderDirectory();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderDirectory();
+        });
+
+        // --- DETAIL VIEW LOGIC ---
+        function showDetail(id) {
+            const item = messData.find(m => m.id === id);
+            document.getElementById('view-directory').classList.add('hidden');
+            document.getElementById('view-detail').classList.remove('hidden');
+            
+            document.getElementById('detailName').innerText = item.name;
+            document.getElementById('detailType').innerText = item.type === 'MESS' ? 'Hostel Mess Menu' : 'Canteen Menu';
+            
+            renderMenu();
+            window.scrollTo(0,0);
+        }
+
+        function showDirectory() {
+            document.getElementById('view-directory').classList.remove('hidden');
+            document.getElementById('view-detail').classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        function selectDay(index) {
+            document.querySelectorAll('.day-chip').forEach((btn, i) => {
+                if(i === index) {
+                    btn.classList.add('bg-[#6366F1]', 'text-white');
+                    btn.classList.remove('bg-white', 'text-slate-500');
+                } else {
+                    btn.classList.remove('bg-[#6366F1]', 'text-white');
+                    btn.classList.add('bg-white', 'text-slate-500');
+                }
+            });
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';
+
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            const icons = { breakfast: 'sun', lunch: 'cloud-sun', dinner: 'moon' };
+
+            meals.forEach(meal => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <div class="flex items-center gap-3 mb-4">
+                        <i data-lucide="${icons[meal]}" class="text-[#6366F1] w-5 h-5"></i>
+                        <h3 class="text-lg font-black capitalize">${meal}</h3>
+                    </div>
+                    <div class="space-y-3">
+                        ${mockMenu[meal].map(item => `
+                        <div class="bg-white rounded-[20px] p-4 shadow-sm flex items-center justify-between">
+                            <div>
+                                <h5 class="font-bold text-slate-800">${item.name}</h5>
+                                <p class="text-[#10B981] text-sm font-bold">₹${item.price}</p>
+                            </div>
+                            <button onclick="vote('${item.id}', this)" class="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-xl hover:bg-[#6366F1]/10 group transition-all">
+                                <i data-lucide="thumbs-up" class="w-4 h-4 text-slate-400 group-hover:text-[#6366F1]"></i>
+                                <span class="text-xs font-black text-slate-400 group-hover:text-[#6366F1]">${item.likes}</span>
+                            </button>
+                        </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+            lucide.createIcons();
+        }
+
+        function vote(itemId, btn) {
+            const span = btn.querySelector('span');
+            let count = parseInt(span.innerText);
+            
+            if(btn.classList.contains('voted')) {
+                btn.classList.remove('voted', 'bg-[#6366F1]/10');
+                btn.querySelector('i').classList.remove('fill-[#6366F1]', 'text-[#6366F1]');
+                btn.querySelector('i').classList.add('text-slate-400');
+                span.classList.add('text-slate-400');
+                span.classList.remove('text-[#6366F1]');
+                span.innerText = count - 1;
+            } else {
+                btn.classList.add('voted', 'bg-[#6366F1]/10');
+                btn.querySelector('i').classList.add('fill-[#6366F1]', 'text-[#6366F1]');
+                btn.querySelector('i').classList.remove('text-slate-400');
+                span.classList.remove('text-slate-400');
+                span.classList.add('text-[#6366F1]');
+                span.innerText = count + 1;
+            }
+        }
+
+        // Initialize
+        renderDirectory();
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    <header class="app-header admin-header">
+        <div>
+            <p class="eyebrow">Admin</p>
+            <h1>Campus Market Dashboard</h1>
+        </div>
+        <a href="../index.html" class="header-link">View App</a>
+    </header>
+
+    <main class="page-shell admin-shell">
+        <section class="admin-grid">
+            <article class="admin-card stat-card">
+                <p class="eyebrow">Stats</p>
+                <h2>Total Listings</h2>
+                <p id="listing-count" class="stat-number">0</p>
+            </article>
+
+            <article class="admin-card">
+                <p class="eyebrow">Maintenance</p>
+                <h2>Delete Old Listings</h2>
+                <p class="section-copy">Choose a cutoff date to remove listings posted before that day.</p>
+                <div class="admin-action-row">
+                    <input type="date" id="delete-date">
+                    <button id="delete-old-btn" class="action-btn primary-btn">Delete Old Listings</button>
+                </div>
+                <p id="delete-status" class="admin-note" aria-live="polite"></p>
+            </article>
+        </section>
+
+        <section class="admin-card requests-card">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Requests</p>
+                    <h2>Request Management</h2>
+                </div>
+            </div>
+            <div id="request-list" class="request-list" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script type="module" src="../src/modules/admin.js"></script>
+</body>
+</html>
